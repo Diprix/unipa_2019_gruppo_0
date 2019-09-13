@@ -197,3 +197,7 @@ buildNumber.properties
 /filesharing-frontend/*.iml
 /filesharing-push/*.iml
 /filesharing-resource/*.iml
+
+# .idea
+/Users/Diprix/IdeaProjects/diprix/unipa_2019_gruppo_0/.idea
+/Users/Diprix/IdeaProjects/diprix/unipa_2019_gruppo_0/filesharing.iml
