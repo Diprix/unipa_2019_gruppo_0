@@ -197,4 +197,4 @@ buildNumber.properties
 /filesharing-frontend/*.iml
 /filesharing-push/*.iml
 /filesharing-resource/*.iml
-/filesharing.iml
+filesharing.iml
