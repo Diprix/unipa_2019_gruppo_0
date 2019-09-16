@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>filesharing-backend</artifactId>
 	<parent>
-		<groupId>it.eng.unipa.filesharing</groupId> <artifactId>filesharing</artifactId> 
+		<groupId>it.eng.unipa.filesharing</groupId> <artifactId>filesharing</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<dependencies>
@@ -28,6 +28,12 @@
     		<groupId>org.keycloak</groupId>
     		<artifactId>keycloak-spring-security-adapter</artifactId>
     	</dependency>
+
+		<dependency>
+			<groupId>nl.martijndwars</groupId>
+			<artifactId>web-push</artifactId>
+			<version>5.0.2</version>
+		</dependency>
 
 		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-data-mongodb</artifactId> 
 			</dependency> -->

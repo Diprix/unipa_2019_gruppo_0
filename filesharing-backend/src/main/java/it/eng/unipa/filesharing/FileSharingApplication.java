@@ -26,7 +26,7 @@ public class FileSharingApplication{
 	public static void main(String[] args) {
 		SpringApplication.run(FileSharingApplication.class, args);
 	}
-	
+
 	/*@Bean
 	public KeycloakConfigResolver KeycloakConfigResolver() {
 	    return new KeycloakSpringBootConfigResolver();
@@ -36,7 +36,7 @@ public class FileSharingApplication{
 	public KeycloakSpringBootConfigResolver KeycloakSpringBootConfigResolver() {
 		return new KeycloakSpringBootConfigResolver();
 	}
-	
+
 }
 
 @Configuration
