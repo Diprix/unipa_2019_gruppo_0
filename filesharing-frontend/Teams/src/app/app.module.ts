@@ -30,6 +30,9 @@ import {HttpClientModule} from "@angular/common/http";
 import { FolderDialogComponent } from './dialog/folder-dialog/folder-dialog.component';
 import { FoldersComponent } from './views/folders/folders.component';
 import { MemberPipe } from './pipe/member.pipe';
+//import {ServiceWorkerModule} from "@angular/service-worker";
+import {environment} from "../environments/environment";
+
 
 @NgModule({
   declarations: [
@@ -66,7 +69,8 @@ import { MemberPipe } from './pipe/member.pipe';
         ReactiveFormsModule,
         KeycloakAngularModule,
         _MatMenuDirectivesModule,
-        MatMenuModule
+        MatMenuModule,
+        //ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production})
     ],
   providers:  [    {
     provide: APP_INITIALIZER,

@@ -11,6 +11,7 @@ import {FolderDialogComponent} from "../../dialog/folder-dialog/folder-dialog.co
 import {ResourceService} from "../../services/resource.service";
 import {SYNC_TYPE, SyncService} from "../../services/sync.service";
 
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
