@@ -6,6 +6,7 @@ import it.eng.unipa.filesharing.model.WebPushSubscription;
 import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.google.gson.Gson;
@@ -39,15 +40,17 @@ public class SendController {
     private ObjectMapper objectMapper;
 
     @PostMapping("/subscribe")
+    @ResponseStatus(value = HttpStatus.CREATED)
     public void subscribe(WebPushSubscription subscription) {
 
-        subscriptions.put(subscription.getNotificationEndPoint(), subscription);
+        System.out.println(">> " + subscription);
+        //subscriptions.put(subscription.getNotificationEndPoint(), subscription);
     }
 
     @PostMapping("/unsubscribe")
     public void unsubscribe(WebPushSubscription subscription) {
 
-        subscriptions.remove(subscription.getNotificationEndPoint());
+        subscriptions.remove(subscription);
     }
 
     @PostMapping("/notify-all")

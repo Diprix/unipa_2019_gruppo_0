@@ -12,6 +12,7 @@ import {ResourceService} from "../../services/resource.service";
 import {SYNC_TYPE, SyncService} from "../../services/sync.service";
 import {PushNotificationsService} from "ng-push";
 import {SwPush} from "@angular/service-worker";
+import {NotificationService} from "../../services/notification.service";
 
 
 
@@ -29,6 +30,8 @@ export class DashboardComponent implements OnInit {
   public team: string;
   public bucket: string;
 
+  public stato:boolean = true;
+
     readonly VAPID_PUBLIC_KEY = "BLBx-hf2WrL2qEa0qKb-aCJbcxEvyn62GDTyyP9KTS5K7ZL0K7TfmOKSPqp8vQF0DaG8hpSBknz_x3qf5F4iEFo";
 
   private urlparams: UrlSegment[];
@@ -41,7 +44,8 @@ export class DashboardComponent implements OnInit {
               private router: ActivatedRoute,
               private route: Router,
               private _pushNotifications: PushNotificationsService,
-              private swPush: SwPush) { }
+              private swPush: SwPush,
+              private notificationService: NotificationService) { }
 
   ngOnInit() {
     // this.teams = this.teamService.getTeam();
@@ -103,50 +107,6 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-    subscribeToNotifications() {
-
-        this.swPush.requestSubscription({
-            serverPublicKey: this.VAPID_PUBLIC_KEY
-        })
-            .then(sub => {
-
-                this.sub = sub;
-
-
-                console.log("Notification Subscription: ", sub);
-/*
-
-                this.newsletterService.addPushSubscriber(sub).subscribe(
-                    () => console.log('Sent push subscription object to server.'),
-                    err =>  console.log('Could not send subscription object to server, reason: ', err)
-                );
-*/
-
-            })
-            .catch(err => console.error("Could not subscribe to notifications", err));
-
-    }
-
-    o2ldSubscribeToNotifications() {
-        const title = 'Notification';
-        const options = new PushNotificationOptions();
-        options.body = 'Team Leader ha aggiunto il file';
-        icon: "assets/images/file.png"; //adding an icon
-
-        this._pushNotifications.create('Canale WebPush', options).subscribe( //creates a notification
-            res => console.log(res),
-            err => console.log(err)
-        );
-    }
-    oldSubscribeToNotifications() {
-
-        this.swPush.requestSubscription({
-            serverPublicKey: this.VAPID_PUBLIC_KEY
-        })
-            .then(sub => console.log("Sottoscritto"))
-            .catch(err => console.error("Could not subscribe to notifications", err));
-    }
-
   openDialogBucket(): void {
     const dialogRef = this.dialog.open(BucketDialogComponent, {
       width: '50vw',
@@ -197,6 +157,32 @@ export class DashboardComponent implements OnInit {
             }
         });
     }
+
+
+    subscribeToNotifications() {
+
+        this.swPush.requestSubscription({
+            serverPublicKey: this.VAPID_PUBLIC_KEY
+        })
+            .then(sub => {
+
+                this.sub = sub;
+
+
+                console.log("Notification Subscription: ", sub);
+
+
+                this.notificationService.addPushSubscriber(sub).subscribe(
+                    () => console.log('Sent push subscription object to server.'),
+                    err =>  console.log('Could not send subscription object to server, reason: ', err)
+                );
+
+
+            })
+            .catch(err => console.error("Could not subscribe to notifications", err));
+
+    }
+
 
 
 }
