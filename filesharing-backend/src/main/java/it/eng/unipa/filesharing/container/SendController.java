@@ -79,4 +79,7 @@ public class SendController {
             return ExceptionUtils.getStackTrace(e);
         }
     }
+
+    // DA IMPLEMENTARE
+    //getResponseEntityResource() RITORNA ID RISORSA DA CUI ESTRARRE NAME E BUCKET
 }
