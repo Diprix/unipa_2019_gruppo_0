@@ -31,9 +31,9 @@ export class DashboardComponent implements OnInit {
   private urlparams: UrlSegment[];
 
 
-    public pushButton = document.querySelector('.js-push-btn');
-    public isSubscribed: boolean = false;
-    public swRegistration: any = null;
+   // public pushButton = document.querySelector('.js-push-btn');
+   // public isSubscribed: boolean = false;
+   // public swRegistration: any = null;
 
 
   readonly applicationServerPublicKey = 'BBylNeBkzWwXI7VR7wnvbZw9PAt5ec5Lo86PzoOt49PN-ywaLEUk9KFA7qEC23hbp6mmp5EUfDTvKniY2MH1f-I';
@@ -49,12 +49,12 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
 
-      /*
+
       const isGranted = this._pushNotificationService.isPermissionGranted;
       if (!isGranted){
           this._pushNotificationService.requestPermission();
       }
-        */
+
 
     // this.teams = this.teamService.getTeam();
     console.log(this.router.pathFromRoot);
@@ -86,7 +86,7 @@ export class DashboardComponent implements OnInit {
 
 
       // - - - - - -
-
+    /*
       navigator.serviceWorker.register('/sw.js')
           .then(function(swReg) {
               console.log('Service Worker is registered', swReg);
@@ -94,7 +94,7 @@ export class DashboardComponent implements OnInit {
               this.swRegistration = swReg;
               initializeUI();
           })
-
+    */
       // - - - - - - - -
 
 
@@ -169,7 +169,7 @@ export class DashboardComponent implements OnInit {
             }
         });
     }
-    /*
+
     myFunction() {
         const title = 'Hello';
         const options = new PushNotificationOptions();
@@ -193,9 +193,9 @@ export class DashboardComponent implements OnInit {
             (err) => {
                 console.log(err);
             });
-    }*/
+    }
 
-
+    /*
     initializeUI():void {
         // Set the initial subscription value
         this.swRegistration.pushManager.getSubscription()
@@ -221,5 +221,7 @@ export class DashboardComponent implements OnInit {
 
         this.pushButton.disabled = false;
     }
+
+     */
 
 }
