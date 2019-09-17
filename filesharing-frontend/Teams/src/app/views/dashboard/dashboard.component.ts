@@ -30,9 +30,11 @@ export class DashboardComponent implements OnInit {
   public team: string;
   public bucket: string;
 
-  public stato:boolean = true;
+  public stato: String = Notification.permission;
+  public supported: boolean = this._pushNotifications.isSupported();
+  public active: boolean = false;
 
-    readonly VAPID_PUBLIC_KEY = "BLBx-hf2WrL2qEa0qKb-aCJbcxEvyn62GDTyyP9KTS5K7ZL0K7TfmOKSPqp8vQF0DaG8hpSBknz_x3qf5F4iEFo";
+    readonly VAPID_PUBLIC_KEY = "BAPGG2IY3Vn48d_H8QNuVLRErkBI0L7oDOOCAMUBqYMTMTzukaIAuB5OOcmkdeRICcyQocEwD-oxVc81YXXZPRY";
 
   private urlparams: UrlSegment[];
 
@@ -48,6 +50,10 @@ export class DashboardComponent implements OnInit {
               private notificationService: NotificationService) { }
 
   ngOnInit() {
+
+      this._pushNotifications.requestPermission();
+        console.log('>>> '+ Notification.permission);
+
     // this.teams = this.teamService.getTeam();
     console.log(this.router.pathFromRoot);
     this.route.events.subscribe(data=>{

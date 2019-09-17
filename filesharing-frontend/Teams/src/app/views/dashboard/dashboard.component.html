@@ -2,15 +2,23 @@
   <div class="flex-spacer"></div>
   <!-- Aggiunto da @Oscar -->
   <button (click)="notify()" type="button" mat-stroked-button class="mat-elevation-z0">
-    <mat-icon>notifications_off</mat-icon>
+    <mat-icon>developer_board</mat-icon>
   </button>
 
   <!-- Aggiunto da TeamLeader -->
-  <button *ngIf="stato == false"  (click)="subscribeToNotifications()" type="button" mat-stroked-button class="mat-elevation-z0">
+  <button *ngIf="supported == false" type="button" mat-stroked-button class="mat-elevation-z0">
+    <mat-icon>notifications_none</mat-icon>
+  </button>
+
+  <button *ngIf="stato == 'denied' && supported == true" type="button" mat-stroked-button class="mat-elevation-z0">
+    <mat-icon>notifications_off</mat-icon>
+  </button>
+
+  <button *ngIf="stato == 'granted' && active == false && supported == true"  (click)="subscribeToNotifications()" type="button" mat-stroked-button class="mat-elevation-z0">
     <mat-icon>notifications</mat-icon>
   </button>
 
-  <button *ngIf="stato == true"  (click)="subscribeToNotifications()" type="button" mat-stroked-button class="mat-elevation-z0">
+  <button *ngIf="stato == 'granted' && active == true && supported == true"  (click)="unSubscribeToNotifications()" type="button" mat-stroked-button class="mat-elevation-z0">
     <mat-icon>notifications_active</mat-icon>
   </button>
 

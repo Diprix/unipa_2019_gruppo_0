@@ -44,7 +44,7 @@ public class SendController {
     public void subscribe(WebPushSubscription subscription) {
 
         System.out.println(">> " + subscription);
-        //subscriptions.put(subscription.getNotificationEndPoint(), subscription);
+        //subscriptions.put(subscription.getNotificationEndPoint, subscription);
     }
 
     @PostMapping("/unsubscribe")
