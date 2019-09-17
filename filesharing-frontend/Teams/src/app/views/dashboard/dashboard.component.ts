@@ -10,8 +10,9 @@ import {BucketService} from "../../services/bucket.service";
 import {FolderDialogComponent} from "../../dialog/folder-dialog/folder-dialog.component";
 import {ResourceService} from "../../services/resource.service";
 import {SYNC_TYPE, SyncService} from "../../services/sync.service";
+import {PushNotificationsService} from "ng-push";
+import {SwPush} from "@angular/service-worker";
 
-import {PushNotificationOptions, PushNotificationService } from 'ngx-push-notifications';
 
 
 @Component({
@@ -22,21 +23,15 @@ import {PushNotificationOptions, PushNotificationService } from 'ngx-push-notifi
 export class DashboardComponent implements OnInit {
 
   public showMenu: boolean = false;
-
+    sub: PushSubscription;
   public teams: Team[];
 
   public team: string;
   public bucket: string;
 
+    readonly VAPID_PUBLIC_KEY = "BLBx-hf2WrL2qEa0qKb-aCJbcxEvyn62GDTyyP9KTS5K7ZL0K7TfmOKSPqp8vQF0DaG8hpSBknz_x3qf5F4iEFo";
+
   private urlparams: UrlSegment[];
-
-
-    public pushButton = document.querySelector('.js-push-btn');
-    public isSubscribed: boolean = false;
-    public swRegistration: any = null;
-
-
-  readonly applicationServerPublicKey = 'BBylNeBkzWwXI7VR7wnvbZw9PAt5ec5Lo86PzoOt49PN-ywaLEUk9KFA7qEC23hbp6mmp5EUfDTvKniY2MH1f-I';
 
   constructor(public dialog: MatDialog,
               private teamService: TeamService,
@@ -45,24 +40,17 @@ export class DashboardComponent implements OnInit {
               private syncService: SyncService,
               private router: ActivatedRoute,
               private route: Router,
-              private _pushNotificationService: PushNotificationService) { }
+              private _pushNotifications: PushNotificationsService,
+              private swPush: SwPush) { }
 
   ngOnInit() {
-
-      /*
-      const isGranted = this._pushNotificationService.isPermissionGranted;
-      if (!isGranted){
-          this._pushNotificationService.requestPermission();
-      }
-        */
-
     // this.teams = this.teamService.getTeam();
     console.log(this.router.pathFromRoot);
     this.route.events.subscribe(data=>{
         this.router.firstChild.paramMap.subscribe(params=>{
           this.team = params.get('team');
           this.bucket = params.get('bucket');
-        })
+             })
     });
     this.router.firstChild.paramMap.subscribe(params=>{
       this.team = params.get('team');
@@ -83,23 +71,19 @@ export class DashboardComponent implements OnInit {
           });
       }
 
-
-
-      // - - - - - -
-
-      navigator.serviceWorker.register('/sw.js')
-          .then(function(swReg) {
-              console.log('Service Worker is registered', swReg);
-
-              this.swRegistration = swReg;
-              initializeUI();
-          })
-
-      // - - - - - - - -
-
-
-
   }
+
+
+    notify(){ //our function to be called on click
+        let options = { //set options
+            body: "The truth is, I'am Iron Man!",
+            icon: "assets/images/ironman.png" //adding an icon
+        }
+        this._pushNotifications.create('Iron Man', options).subscribe( //creates a notification
+            res => console.log(res),
+            err => console.log(err)
+        );
+    }
 
   openDialogTeam(): void {
     const dialogRef = this.dialog.open(TeamDialogComponent, {
@@ -118,6 +102,50 @@ export class DashboardComponent implements OnInit {
       }
     });
   }
+
+    subscribeToNotifications() {
+
+        this.swPush.requestSubscription({
+            serverPublicKey: this.VAPID_PUBLIC_KEY
+        })
+            .then(sub => {
+
+                this.sub = sub;
+
+
+                console.log("Notification Subscription: ", sub);
+/*
+
+                this.newsletterService.addPushSubscriber(sub).subscribe(
+                    () => console.log('Sent push subscription object to server.'),
+                    err =>  console.log('Could not send subscription object to server, reason: ', err)
+                );
+*/
+
+            })
+            .catch(err => console.error("Could not subscribe to notifications", err));
+
+    }
+
+    o2ldSubscribeToNotifications() {
+        const title = 'Notification';
+        const options = new PushNotificationOptions();
+        options.body = 'Team Leader ha aggiunto il file';
+        icon: "assets/images/file.png"; //adding an icon
+
+        this._pushNotifications.create('Canale WebPush', options).subscribe( //creates a notification
+            res => console.log(res),
+            err => console.log(err)
+        );
+    }
+    oldSubscribeToNotifications() {
+
+        this.swPush.requestSubscription({
+            serverPublicKey: this.VAPID_PUBLIC_KEY
+        })
+            .then(sub => console.log("Sottoscritto"))
+            .catch(err => console.error("Could not subscribe to notifications", err));
+    }
 
   openDialogBucket(): void {
     const dialogRef = this.dialog.open(BucketDialogComponent, {
@@ -169,57 +197,20 @@ export class DashboardComponent implements OnInit {
             }
         });
     }
-    /*
-    myFunction() {
-        const title = 'Hello';
-        const options = new PushNotificationOptions();
-        options.body = 'Native Push Notification';
-
-        this._pushNotificationService.create(title, options).subscribe((notif) => {
-                if (notif.event.type === 'show') {
-                    console.log('onshow');
-                    setTimeout(() => {
-                        notif.notification.close();
-                    }, 3000);
-                }
-                if (notif.event.type === 'click') {
-                    console.log('click');
-                    notif.notification.close();
-                }
-                if (notif.event.type === 'close') {
-                    console.log('close');
-                }
-            },
-            (err) => {
-                console.log(err);
-            });
-    }*/
 
 
-    initializeUI():void {
-        // Set the initial subscription value
-        this.swRegistration.pushManager.getSubscription()
-            .then(function(subscription) {
-                this.isSubscribed = !(subscription === null);
-
-                if (this.isSubscribed) {
-                    console.log('User IS subscribed.');
-                } else {
-                    console.log('User is NOT subscribed.');
-                }
-
-                updateBtn();
-            });
-    }
-
-    updateBtn(): void {
-        if (this.isSubscribed) {
-            this.pushButton.textContent = 'Disable Push Messaging';
-        } else {
-            this.pushButton.textContent = 'Enable Push Messaging';
-        }
-
-        this.pushButton.disabled = false;
-    }
-
+}
+export declare class PushNotificationOptions {
+    body: string;
+    icon: string;
+    sound: string;
+    data: any;
+    tag: string;
+    dir: NotificationDirection;
+    lang: string;
+    renotify: boolean;
+    sticky: boolean;
+    vibrate: Array<number>;
+    noscreen: boolean;
+    silent: boolean;
 }

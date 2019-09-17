@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import {APP_INITIALIZER, NgModule} from '@angular/core';
 
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
@@ -30,13 +31,17 @@ import {HttpClientModule} from "@angular/common/http";
 import { FolderDialogComponent } from './dialog/folder-dialog/folder-dialog.component';
 import { FoldersComponent } from './views/folders/folders.component';
 import { MemberPipe } from './pipe/member.pipe';
+import {PushNotificationsModule} from "ng-push";
 import {ServiceWorkerModule} from "@angular/service-worker";
-import {environment} from "../environments/environment";
-import { PushNotificationService } from 'ngx-push-notifications';
+import {environment} from "../environments/environment.prod";
+
+import {MatListModule} from "@angular/material/list";
 
 
 @NgModule({
   declarations: [
+
+
     AppComponent,
     DragDropDirectiveDirective,
     UploadFileComponent,
@@ -53,6 +58,11 @@ import { PushNotificationService } from 'ngx-push-notifications';
     MemberPipe
   ],
     imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        ReactiveFormsModule,
         HttpClientModule,
         BrowserModule,
         AppRoutingModule,
@@ -70,10 +80,14 @@ import { PushNotificationService } from 'ngx-push-notifications';
         ReactiveFormsModule,
         KeycloakAngularModule,
         _MatMenuDirectivesModule,
+        PushNotificationsModule, // add it to imports
         MatMenuModule,
-        ServiceWorkerModule.register('/sw-worker.js', {enabled: environment.production})
+
+        environment.production ? ServiceWorkerModule.register('/ngsw-worker.js') : [],
+        MatListModule
     ],
-  providers:  [ PushNotificationService,   {
+  providers:  [
+      {
     provide: APP_INITIALIZER,
     useFactory: initializer,
     multi: true,
@@ -84,6 +98,7 @@ import { PushNotificationService } from 'ngx-push-notifications';
     BucketDialogComponent,
     FolderDialogComponent
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+
 })
 export class AppModule { }
