@@ -26,6 +26,8 @@ import java.util.concurrent.ExecutionException;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import static it.eng.unipa.filesharing.context.SecurityContext.getEmail;
+
 @RestController
 public class SendController {
     private static final String PUBLIC_KEY = "BAPGG2IY3Vn48d_H8QNuVLRErkBI0L7oDOOCAMUBqYMTMTzukaIAuB5OOcmkdeRICcyQocEwD-oxVc81YXXZPRY";
@@ -43,14 +45,20 @@ public class SendController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public void subscribe(WebPushSubscription subscription) {
 
-        System.out.println(">> " + subscription);
-        //subscriptions.put(subscription.getNotificationEndPoint, subscription);
+        System.out.println(">>## " + getEmail());
+
+        subscriptions.put(getEmail(), subscription);
+
+        System.out.println(subscriptions.values());
     }
 
-    @PostMapping("/unsubscribe")
-    public void unsubscribe(WebPushSubscription subscription) {
+    @GetMapping("/unsubscribe")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void unsubscribe() {
 
-        subscriptions.remove(subscription);
+        System.out.println(">>** disinscritto");
+        subscriptions.remove(getEmail());
+        System.out.println(subscriptions.values());
     }
 
     @PostMapping("/notify-all")

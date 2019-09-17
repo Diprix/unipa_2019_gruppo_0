@@ -23,68 +23,69 @@ import {NotificationService} from "../../services/notification.service";
 })
 export class DashboardComponent implements OnInit {
 
-  public showMenu: boolean = false;
+    public showMenu: boolean = false;
     sub: PushSubscription;
-  public teams: Team[];
+    public teams: Team[];
 
-  public team: string;
-  public bucket: string;
+    public team: string;
+    public bucket: string;
 
-  public stato: String = Notification.permission;
-  public supported: boolean = this._pushNotifications.isSupported();
-  public active: boolean = false;
+    public stato: String = Notification.permission;
+    public supported: boolean = this._pushNotifications.isSupported();
+    public active: boolean = true;
 
     readonly VAPID_PUBLIC_KEY = "BAPGG2IY3Vn48d_H8QNuVLRErkBI0L7oDOOCAMUBqYMTMTzukaIAuB5OOcmkdeRICcyQocEwD-oxVc81YXXZPRY";
 
-  private urlparams: UrlSegment[];
+    private urlparams: UrlSegment[];
 
-  constructor(public dialog: MatDialog,
-              private teamService: TeamService,
-              private bucketService: BucketService,
-              private resourceService: ResourceService,
-              private syncService: SyncService,
-              private router: ActivatedRoute,
-              private route: Router,
-              private _pushNotifications: PushNotificationsService,
-              private swPush: SwPush,
-              private notificationService: NotificationService) { }
+    constructor(public dialog: MatDialog,
+                private teamService: TeamService,
+                private bucketService: BucketService,
+                private resourceService: ResourceService,
+                private syncService: SyncService,
+                private router: ActivatedRoute,
+                private route: Router,
+                private _pushNotifications: PushNotificationsService,
+                private swPush: SwPush,
+                private notificationService: NotificationService) {
+    }
 
-  ngOnInit() {
+    ngOnInit() {
 
-      this._pushNotifications.requestPermission();
-        console.log('>>> '+ Notification.permission);
+        this._pushNotifications.requestPermission();
+        console.log('>>> ' + Notification.permission);
 
-    // this.teams = this.teamService.getTeam();
-    console.log(this.router.pathFromRoot);
-    this.route.events.subscribe(data=>{
-        this.router.firstChild.paramMap.subscribe(params=>{
-          this.team = params.get('team');
-          this.bucket = params.get('bucket');
-             })
-    });
-    this.router.firstChild.paramMap.subscribe(params=>{
-      this.team = params.get('team');
-      this.bucket = params.get('bucket');
-      console.log(params)
-    });
-      this.router.url.subscribe((data) => {
-          console.log('params ', data); //contains all the segments so put logic here of determining what to do according to nesting depth
-          this.urlparams = data;
-      });
-      // this.router.children[0].params
-      //     .subscribe((childParams: Params) =>{
-      //         console.log("dashboard:",childParams);
-      //     });
-      if(this.router.children[0].children[0]) {
-          this.router.children[0].children[0].url.subscribe(data => {
-              this.urlparams = data;
-          });
-      }
+        // this.teams = this.teamService.getTeam();
+        console.log(this.router.pathFromRoot);
+        this.route.events.subscribe(data => {
+            this.router.firstChild.paramMap.subscribe(params => {
+                this.team = params.get('team');
+                this.bucket = params.get('bucket');
+            })
+        });
+        this.router.firstChild.paramMap.subscribe(params => {
+            this.team = params.get('team');
+            this.bucket = params.get('bucket');
+            console.log(params)
+        });
+        this.router.url.subscribe((data) => {
+            console.log('params ', data); //contains all the segments so put logic here of determining what to do according to nesting depth
+            this.urlparams = data;
+        });
+        // this.router.children[0].params
+        //     .subscribe((childParams: Params) =>{
+        //         console.log("dashboard:",childParams);
+        //     });
+        if (this.router.children[0].children[0]) {
+            this.router.children[0].children[0].url.subscribe(data => {
+                this.urlparams = data;
+            });
+        }
 
-  }
+    }
 
 
-    notify(){ //our function to be called on click
+    notify() { //our function to be called on click
         let options = { //set options
             body: "The truth is, I'am Iron Man!",
             icon: "assets/images/ironman.png" //adding an icon
@@ -95,41 +96,41 @@ export class DashboardComponent implements OnInit {
         );
     }
 
-  openDialogTeam(): void {
-    const dialogRef = this.dialog.open(TeamDialogComponent, {
-      width: '50vw',
-      data: {}
-    });
-    this.showMenu = false;
-    dialogRef.afterClosed().subscribe((result:TeamDTO) => {
-      if(result){
-        result.buckets = [];
-        result.buckets.push({name:'Default', bucketType: "BUCKET", description:'default'});
-        // this.teamService.addTeam(result);
-        this.teamService.save(result).subscribe(data=>{
-            this.syncService.sendEvent(SYNC_TYPE.Team);
+    openDialogTeam(): void {
+        const dialogRef = this.dialog.open(TeamDialogComponent, {
+            width: '50vw',
+            data: {}
         });
-      }
-    });
-  }
+        this.showMenu = false;
+        dialogRef.afterClosed().subscribe((result: TeamDTO) => {
+            if (result) {
+                result.buckets = [];
+                result.buckets.push({name: 'Default', bucketType: "BUCKET", description: 'default'});
+                // this.teamService.addTeam(result);
+                this.teamService.save(result).subscribe(data => {
+                    this.syncService.sendEvent(SYNC_TYPE.Team);
+                });
+            }
+        });
+    }
 
-  openDialogBucket(): void {
-    const dialogRef = this.dialog.open(BucketDialogComponent, {
-      width: '50vw',
-      data: {}
-    });
-    this.showMenu = false;
-    dialogRef.afterClosed().subscribe((result:BucketDTO) => {
-      if(result){
-        result.bucketType = "filesystem";
-        console.log(result);
-        this.bucketService.save(this.team, result).subscribe(data=>{
-            this.syncService.sendEvent(SYNC_TYPE.Bucket);
-            this.syncService.sendEvent(SYNC_TYPE.Team);
-        })
-      }
-    });
-  }
+    openDialogBucket(): void {
+        const dialogRef = this.dialog.open(BucketDialogComponent, {
+            width: '50vw',
+            data: {}
+        });
+        this.showMenu = false;
+        dialogRef.afterClosed().subscribe((result: BucketDTO) => {
+            if (result) {
+                result.bucketType = "filesystem";
+                console.log(result);
+                this.bucketService.save(this.team, result).subscribe(data => {
+                    this.syncService.sendEvent(SYNC_TYPE.Bucket);
+                    this.syncService.sendEvent(SYNC_TYPE.Team);
+                })
+            }
+        });
+    }
 
     openDialogFolder(): void {
         const dialogRef = this.dialog.open(FolderDialogComponent, {
@@ -137,11 +138,11 @@ export class DashboardComponent implements OnInit {
             data: {}
         });
         this.showMenu = false;
-        dialogRef.afterClosed().subscribe((result:FolderDTO) => {
-            if(result){
-                result.parentUniqueId = this.urlparams.length>0?this.urlparams[this.urlparams.length-1].path:null;
+        dialogRef.afterClosed().subscribe((result: FolderDTO) => {
+            if (result) {
+                result.parentUniqueId = this.urlparams.length > 0 ? this.urlparams[this.urlparams.length - 1].path : null;
                 console.log(result);
-                this.resourceService.addFolder(this.team, this.bucket, result).subscribe(data=>{
+                this.resourceService.addFolder(this.team, this.bucket, result).subscribe(data => {
                     this.syncService.sendEvent(SYNC_TYPE.Resource);
                 });
             }
@@ -154,10 +155,10 @@ export class DashboardComponent implements OnInit {
             data: {}
         });
         this.showMenu = false;
-        dialogRef.afterClosed().subscribe((result:FolderDTO) => {
-            if(result){
+        dialogRef.afterClosed().subscribe((result: FolderDTO) => {
+            if (result) {
                 console.log(result);
-                this.resourceService.addFolder(this.team, this.bucket, result).subscribe(data=>{
+                this.resourceService.addFolder(this.team, this.bucket, result).subscribe(data => {
                     this.syncService.sendEvent(SYNC_TYPE.Resource);
                 });
             }
@@ -180,7 +181,7 @@ export class DashboardComponent implements OnInit {
 
                 this.notificationService.addPushSubscriber(sub).subscribe(
                     () => console.log('Sent push subscription object to server.'),
-                    err =>  console.log('Could not send subscription object to server, reason: ', err)
+                    err => console.log('Could not send subscription object to server, reason: ', err)
                 );
 
 
@@ -189,7 +190,20 @@ export class DashboardComponent implements OnInit {
 
     }
 
+    unSubscribeToNotifications() {
+        this.swPush.requestSubscription({
+            serverPublicKey: this.VAPID_PUBLIC_KEY
+        })
+            .then(sub => {
 
+                this.notificationService.remouvePushSubscribe().subscribe(
+                    () => console.log('Sent push unsubscription to server.'),
+                    err => console.log('Could not send nusubscription object to server, reason: ', err)
+                );
+            })
+            .catch(err => console.error("Could not unsubscribe to notifications", err));
+
+    }
 
 }
 export declare class PushNotificationOptions {

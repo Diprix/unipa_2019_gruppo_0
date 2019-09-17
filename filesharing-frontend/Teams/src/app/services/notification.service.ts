@@ -13,6 +13,10 @@ export class NotificationService {
     return this.http.post('/api/subscribe', sub);
   }
 
+  remouvePushSubscribe() {
+    return this.http.get('/api/unsubscribe');
+  }
+
   send() {
     return this.http.post('/api/newsletter', null);
   }
