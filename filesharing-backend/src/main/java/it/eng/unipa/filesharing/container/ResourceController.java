@@ -56,8 +56,7 @@ public class ResourceController {
 		ResourceDTO resourceDTO = teamService.getContent(uuid,bucketName,uniqueId);
 		return getResponseEntityResource(resourceDTO.getName(), resourceDTO.getContent());
 	}
-	
-	
+
 	private ResponseEntity<Resource> getResponseEntityResource(String name, byte[] body) {
 		return ResponseEntity.ok()
                 //.contentType(MediaType.parseMediaType("application/pdf"))
