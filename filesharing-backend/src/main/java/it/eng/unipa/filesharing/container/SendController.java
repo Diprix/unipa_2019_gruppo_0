@@ -1,9 +1,12 @@
 package it.eng.unipa.filesharing.container;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.eng.unipa.filesharing.dto.ResourceDTO;
 import it.eng.unipa.filesharing.model.WebPushMessage;
 import it.eng.unipa.filesharing.model.WebPushSubscription;
 import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.google.gson.Gson;
 import org.apache.http.HttpResponse;
@@ -16,6 +19,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.Security;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
@@ -79,7 +83,12 @@ public class SendController {
             return ExceptionUtils.getStackTrace(e);
         }
     }
-
+/*
     // DA IMPLEMENTARE
     //getResponseEntityResource() RITORNA ID RISORSA DA CUI ESTRARRE NAME E BUCKET
+    @GetMapping("/{uuid}/{bucketName}/{uniqueId}")
+    public ResponseEntity<Resource> download(@PathVariable("uuid") UUID uuid, @PathVariable("bucketName") String bucketName, @PathVariable("uniqueId") String uniqueId) {
+        ResourceDTO resourceDTO = teamService.getContent(uuid,bucketName,uniqueId);
+        return getResponseEntityResource(resourceDTO.getName(), resourceDTO.getContent());
+    }*/
 }
