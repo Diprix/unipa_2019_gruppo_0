@@ -30,6 +30,10 @@ import {HttpClientModule} from "@angular/common/http";
 import { FolderDialogComponent } from './dialog/folder-dialog/folder-dialog.component';
 import { FoldersComponent } from './views/folders/folders.component';
 import { MemberPipe } from './pipe/member.pipe';
+import {ServiceWorkerModule} from "@angular/service-worker";
+import {environment} from "../environments/environment";
+import { PushNotificationService } from 'ngx-push-notifications';
+
 
 @NgModule({
   declarations: [
@@ -66,9 +70,10 @@ import { MemberPipe } from './pipe/member.pipe';
         ReactiveFormsModule,
         KeycloakAngularModule,
         _MatMenuDirectivesModule,
-        MatMenuModule
+        MatMenuModule,
+        ServiceWorkerModule.register('/sw-worker.js', {enabled: environment.production})
     ],
-  providers:  [    {
+  providers:  [ PushNotificationService,   {
     provide: APP_INITIALIZER,
     useFactory: initializer,
     multi: true,

@@ -24,7 +24,10 @@
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/sw-register.js",
+              "src/sw.js",
+              "src/offline.html"
             ],
             "styles": [
               "src/styles.scss"
@@ -40,6 +43,7 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
+              "serviceWorker": true,
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
@@ -89,7 +93,10 @@
             "scripts": [],
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              "src/sw-register.js",
+              "src/sw.js",
+              "src/offline.html"
             ]
           }
         },

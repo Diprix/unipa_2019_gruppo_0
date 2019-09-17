@@ -1,0 +1,11 @@
+{
+  "/api": {
+    "target": "https://dilewareinc-webserver.herokuapp.com:8081",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
+    }
+  }
+}
