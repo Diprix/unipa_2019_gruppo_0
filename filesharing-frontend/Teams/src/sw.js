@@ -11,7 +11,7 @@ log('Installing Service Worker');
 
 
 
-/*
+
 
 
 //Implemento la cache storage PWA API
@@ -92,4 +92,3 @@ self.addEventListener('notificationclick', function(event) {
     }
 });
 
-*/
