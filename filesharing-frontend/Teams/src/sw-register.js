@@ -1,22 +1,16 @@
+if ('serviceWorker' in navigator && 'PushManager' in window) {
+    console.log('Service Worker and Push is supported');
 
-//per prima cosa controlliamo se il nostro browser supporta il service worker
+    navigator.serviceWorker.register('/sw.js')
+        .then(function(swReg) {
+            console.log('Service Worker is registered', swReg);
 
-if('serviceWorker' in navigator) {
-
-    navigator.serviceWorker.register('/sw.js', {
-        scope: '/' //intercetta tutte le richieste
-    })
-        .then(registration => {
-
-            console.log('Service worker registration completed');
-
+            swRegistration = swReg;
+        })
+        .catch(function(error) {
+            console.error('Service Worker Error', error);
         });
 } else {
-    console.log('Service workers aren\'t supported in this browser.');
-    //disableAndSetBtnMessage('Service workers unsupported');
+    console.warn('Push messaging is not supported');
+    pushButton.textContent = 'Push Not Supported';
 }
-
-
-
-//per supportare la diciture  => in js presente alla riga 9 è necessario
-//aggionrare la Javascripo lenguage version in impostazioni

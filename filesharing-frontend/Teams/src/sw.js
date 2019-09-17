@@ -10,6 +10,10 @@ function log(messages) {
 log('Installing Service Worker');
 
 
+
+/*
+
+
 //Implemento la cache storage PWA API
 
 self.addEventListener('install', event => event.waitUntil(installServiceWorker()));
@@ -50,6 +54,8 @@ self.addEventListener('active', () => {
 
 });
 
+
+
 // - - - - - - - - - - - - - - - - - -
 // Metodi Notifiche Push
 
@@ -85,3 +91,5 @@ self.addEventListener('notificationclick', function(event) {
         event.waitUntil(clients.openWindow(self.clickTarget));
     }
 });
+
+*/

@@ -11,6 +11,8 @@ import {FolderDialogComponent} from "../../dialog/folder-dialog/folder-dialog.co
 import {ResourceService} from "../../services/resource.service";
 import {SYNC_TYPE, SyncService} from "../../services/sync.service";
 
+import {PushNotificationOptions, PushNotificationService } from 'ngx-push-notifications';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -28,15 +30,32 @@ export class DashboardComponent implements OnInit {
 
   private urlparams: UrlSegment[];
 
+
+    public pushButton = document.querySelector('.js-push-btn');
+    public isSubscribed: boolean = false;
+    public swRegistration: any = null;
+
+
+  readonly applicationServerPublicKey = 'BBylNeBkzWwXI7VR7wnvbZw9PAt5ec5Lo86PzoOt49PN-ywaLEUk9KFA7qEC23hbp6mmp5EUfDTvKniY2MH1f-I';
+
   constructor(public dialog: MatDialog,
               private teamService: TeamService,
               private bucketService: BucketService,
               private resourceService: ResourceService,
               private syncService: SyncService,
               private router: ActivatedRoute,
-              private route: Router) { }
+              private route: Router,
+              private _pushNotificationService: PushNotificationService) { }
 
   ngOnInit() {
+
+      /*
+      const isGranted = this._pushNotificationService.isPermissionGranted;
+      if (!isGranted){
+          this._pushNotificationService.requestPermission();
+      }
+        */
+
     // this.teams = this.teamService.getTeam();
     console.log(this.router.pathFromRoot);
     this.route.events.subscribe(data=>{
@@ -63,6 +82,22 @@ export class DashboardComponent implements OnInit {
               this.urlparams = data;
           });
       }
+
+
+
+      // - - - - - -
+
+      navigator.serviceWorker.register('/sw.js')
+          .then(function(swReg) {
+              console.log('Service Worker is registered', swReg);
+
+              this.swRegistration = swReg;
+              initializeUI();
+          })
+
+      // - - - - - - - -
+
+
 
   }
 
@@ -134,6 +169,57 @@ export class DashboardComponent implements OnInit {
             }
         });
     }
+    /*
+    myFunction() {
+        const title = 'Hello';
+        const options = new PushNotificationOptions();
+        options.body = 'Native Push Notification';
 
+        this._pushNotificationService.create(title, options).subscribe((notif) => {
+                if (notif.event.type === 'show') {
+                    console.log('onshow');
+                    setTimeout(() => {
+                        notif.notification.close();
+                    }, 3000);
+                }
+                if (notif.event.type === 'click') {
+                    console.log('click');
+                    notif.notification.close();
+                }
+                if (notif.event.type === 'close') {
+                    console.log('close');
+                }
+            },
+            (err) => {
+                console.log(err);
+            });
+    }*/
+
+
+    initializeUI():void {
+        // Set the initial subscription value
+        this.swRegistration.pushManager.getSubscription()
+            .then(function(subscription) {
+                this.isSubscribed = !(subscription === null);
+
+                if (this.isSubscribed) {
+                    console.log('User IS subscribed.');
+                } else {
+                    console.log('User is NOT subscribed.');
+                }
+
+                updateBtn();
+            });
+    }
+
+    updateBtn(): void {
+        if (this.isSubscribed) {
+            this.pushButton.textContent = 'Disable Push Messaging';
+        } else {
+            this.pushButton.textContent = 'Enable Push Messaging';
+        }
+
+        this.pushButton.disabled = false;
+    }
 
 }
