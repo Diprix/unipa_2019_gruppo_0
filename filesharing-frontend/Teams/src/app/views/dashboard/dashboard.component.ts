@@ -32,7 +32,11 @@ export class DashboardComponent implements OnInit {
 
     public stato: String = Notification.permission;
     public supported: boolean = this._pushNotifications.isSupported();
-    public active: boolean = true;
+    public active: boolean = false;
+
+    public button: any[] = [
+        {id: 0}
+    ];
 
     readonly VAPID_PUBLIC_KEY = "BAPGG2IY3Vn48d_H8QNuVLRErkBI0L7oDOOCAMUBqYMTMTzukaIAuB5OOcmkdeRICcyQocEwD-oxVc81YXXZPRY";
 
@@ -52,8 +56,25 @@ export class DashboardComponent implements OnInit {
 
     ngOnInit() {
 
-        this._pushNotifications.requestPermission();
-        console.log('>>> ' + Notification.permission);
+        //this._pushNotifications.requestPermission();
+        Notification.requestPermission().then(function(result) {
+            if (result === 'denied') {
+
+                console.log('Permission wasn\'t granted. Allow a retry.');
+                return;
+            }
+            if (result === 'default') {
+                console.log('The permission request was dismissed.');
+                return;
+            }
+            // Do something with the granted permission.
+        });
+        console.log('#### ' + Notification.permission);
+        console.log('#### ' + this.active);
+
+
+
+
 
         // this.teams = this.teamService.getTeam();
         console.log(this.router.pathFromRoot);
@@ -175,6 +196,9 @@ export class DashboardComponent implements OnInit {
 
                 this.sub = sub;
 
+                this.active = true;
+
+                //location.reload();
 
                 console.log("Notification Subscription: ", sub);
 
@@ -190,12 +214,17 @@ export class DashboardComponent implements OnInit {
 
     }
 
+    onSave($event){
+        console.log("Save button is clicked!", $event);
+    }
+
     unSubscribeToNotifications() {
         this.swPush.requestSubscription({
             serverPublicKey: this.VAPID_PUBLIC_KEY
         })
             .then(sub => {
 
+                this.active = false;
                 this.notificationService.remouvePushSubscribe().subscribe(
                     () => console.log('Sent push unsubscription to server.'),
                     err => console.log('Could not send nusubscription object to server, reason: ', err)

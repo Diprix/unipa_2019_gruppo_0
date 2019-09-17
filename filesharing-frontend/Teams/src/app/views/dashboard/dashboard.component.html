@@ -5,22 +5,31 @@
     <mat-icon>developer_board</mat-icon>
   </button>
 
-  <!-- Aggiunto da TeamLeader -->
+
+  <!-- Aggiunto da @Oscar -->
   <button *ngIf="supported == false" type="button" mat-stroked-button class="mat-elevation-z0">
     <mat-icon>notifications_none</mat-icon>
   </button>
 
-  <button *ngIf="stato == 'denied' && supported == true" type="button" mat-stroked-button class="mat-elevation-z0">
+  <button *ngIf="stato == 'denied' && supported == true" type="button" mat-stroked-button class="mat-elevation-z0" (click)="onSave($event)">
     <mat-icon>notifications_off</mat-icon>
   </button>
 
-  <button *ngIf="stato == 'granted' && active == false && supported == true"  (click)="subscribeToNotifications()" type="button" mat-stroked-button class="mat-elevation-z0">
+  <!--<button *ngIf="stato == 'granted' || stato == 'default' && active == false && supported == true" (click)="subscribeToNotifications()" type="button" mat-stroked-button class="mat-elevation-z0">
     <mat-icon>notifications</mat-icon>
   </button>
 
   <button *ngIf="stato == 'granted' && active == true && supported == true"  (click)="unSubscribeToNotifications()" type="button" mat-stroked-button class="mat-elevation-z0">
     <mat-icon>notifications_active</mat-icon>
+  </button>-->
+
+  <button *ngIf="stato == 'granted' || stato == 'default' && supported == true" type="button" mat-stroked-button class="mat-elevation-z0">
+
+    <mat-icon *ngIf="active == false; else attivo" (click)="subscribeToNotifications()">notifications</mat-icon>
+
+    <ng-template #attivo ><mat-icon (click)="unSubscribeToNotifications()" >notifications_active</mat-icon></ng-template>
   </button>
+
 
   <button type="button" mat-stroked-button class="mat-elevation-z0">
   <mat-icon>attachment</mat-icon>
