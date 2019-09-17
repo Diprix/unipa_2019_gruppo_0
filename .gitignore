@@ -198,3 +198,4 @@ buildNumber.properties
 /filesharing-push/*.iml
 /filesharing-resource/*.iml
 filesharing.iml
+filesharing-frontend/Teams/package-lock.json
