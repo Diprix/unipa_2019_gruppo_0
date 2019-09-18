@@ -33,10 +33,7 @@ export class DashboardComponent implements OnInit {
     public stato: String = Notification.permission;
     public supported: boolean = this._pushNotifications.isSupported();
     public active: boolean = false;
-
-    public button: any[] = [
-        {id: 0}
-    ];
+    
 
     readonly VAPID_PUBLIC_KEY = "BAPGG2IY3Vn48d_H8QNuVLRErkBI0L7oDOOCAMUBqYMTMTzukaIAuB5OOcmkdeRICcyQocEwD-oxVc81YXXZPRY";
 
@@ -56,17 +53,26 @@ export class DashboardComponent implements OnInit {
 
     ngOnInit() {
 
+        //this.stato = Notification.permission;
         //this._pushNotifications.requestPermission();
         Notification.requestPermission().then(function(result) {
             if (result === 'denied') {
 
                 console.log('Permission wasn\'t granted. Allow a retry.');
+
                 return;
             }
             if (result === 'default') {
                 console.log('The permission request was dismissed.');
+
                 return;
             }
+            if (result === 'granted') {
+                console.log('The permission request accepted');
+
+                return;
+            }
+
             // Do something with the granted permission.
         });
         console.log('#### ' + Notification.permission);
