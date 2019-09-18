@@ -33,7 +33,7 @@ export class DashboardComponent implements OnInit {
     public stato: String = Notification.permission;
     public supported: boolean = this._pushNotifications.isSupported();
     public active: boolean = false;
-    
+
 
     readonly VAPID_PUBLIC_KEY = "BAPGG2IY3Vn48d_H8QNuVLRErkBI0L7oDOOCAMUBqYMTMTzukaIAuB5OOcmkdeRICcyQocEwD-oxVc81YXXZPRY";
 
@@ -68,7 +68,7 @@ export class DashboardComponent implements OnInit {
                 return;
             }
             if (result === 'granted') {
-                console.log('The permission request accepted');
+                console.log('The permission request accepted.');
 
                 return;
             }
