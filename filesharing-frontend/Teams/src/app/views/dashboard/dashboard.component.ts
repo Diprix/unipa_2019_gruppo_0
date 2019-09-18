@@ -112,12 +112,14 @@ export class DashboardComponent implements OnInit {
     }
 
 
-    notify() { //our function to be called on click
+    notify(titolo, corpo) { //our function to be called on click
         let options = { //set options
-            body: "The truth is, I'am Iron Man!",
-            icon: "assets/images/ironman.png" //adding an icon
+
+            body: corpo,
+            icon: "assets/images/logo.png", //adding an icon
+            vibrate: [100, 50, 100]
         }
-        this._pushNotifications.create('Iron Man', options).subscribe( //creates a notification
+        this._pushNotifications.create(titolo, options).subscribe( //creates a notification
             res => console.log(res),
             err => console.log(err)
         );
@@ -206,8 +208,10 @@ export class DashboardComponent implements OnInit {
 
                 //location.reload();
 
-                console.log("Notification Subscription: ", sub);
+                console.log("Notification Subscription: ", sub.toJSON());
+                console.log("endpoint: " + sub.endpoint)
 
+                this.notify('Congratulazioni','Ha abilitato le notifiche push')
 
                 this.notificationService.addPushSubscriber(sub).subscribe(
                     () => console.log('Sent push subscription object to server.'),
@@ -220,9 +224,11 @@ export class DashboardComponent implements OnInit {
 
     }
 
+    // - - - - -  DA ELIMINARE - - - - - - -
     onSave($event){
         console.log("Save button is clicked!", $event);
     }
+    // - - - - - - - - - - - - - - - - - - -
 
     unSubscribeToNotifications() {
         this.swPush.requestSubscription({
@@ -235,6 +241,8 @@ export class DashboardComponent implements OnInit {
                     () => console.log('Sent push unsubscription to server.'),
                     err => console.log('Could not send nusubscription object to server, reason: ', err)
                 );
+                this.notify('Congratulazioni','Ha disabilitato le notifiche push')
+
             })
             .catch(err => console.error("Could not unsubscribe to notifications", err));
 
