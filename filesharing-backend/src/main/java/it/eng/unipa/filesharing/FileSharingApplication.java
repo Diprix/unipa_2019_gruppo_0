@@ -1,8 +1,10 @@
 package it.eng.unipa.filesharing;
 
+import java.security.Security;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,8 +24,14 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @SpringBootApplication
 @Configuration
 public class FileSharingApplication{
-	
+
 	public static void main(String[] args) {
+		// Add BouncyCastle as an algorithm provider
+		if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
+			Security.addProvider(new BouncyCastleProvider());
+		}
+
+
 		SpringApplication.run(FileSharingApplication.class, args);
 	}
 
@@ -31,7 +39,7 @@ public class FileSharingApplication{
 	public KeycloakConfigResolver KeycloakConfigResolver() {
 	    return new KeycloakSpringBootConfigResolver();
 	}*/
-	
+
 	@Bean
 	public KeycloakSpringBootConfigResolver KeycloakSpringBootConfigResolver() {
 		return new KeycloakSpringBootConfigResolver();

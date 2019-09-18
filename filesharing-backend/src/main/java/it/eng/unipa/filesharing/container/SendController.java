@@ -1,13 +1,9 @@
 package it.eng.unipa.filesharing.container;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.eng.unipa.filesharing.dto.ResourceDTO;
-import it.eng.unipa.filesharing.model.WebPushMessage;
 import it.eng.unipa.filesharing.model.WebPushSubscription;
-import org.jose4j.lang.JoseException;
+import it.eng.unipa.filesharing.service.SubscriptionsRegistryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.google.gson.Gson;
 import org.apache.http.HttpResponse;
@@ -16,13 +12,7 @@ import nl.martijndwars.webpush.Subscription;
 import nl.martijndwars.webpush.PushService;
 import nl.martijndwars.webpush.Notification;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.security.Security;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
@@ -36,32 +26,33 @@ public class SendController {
     private static final String PAYLOAD = "My fancy message";
     private static PushService pushService = new PushService();
 
-    private Map<String, WebPushSubscription> subscriptions = new ConcurrentHashMap<>();
+    @Autowired
+    private SubscriptionsRegistryService subscriptionsRegistry;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @PostMapping("/subscribe")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public void subscribe(WebPushSubscription subscription) {
+    public void subscribe(@RequestBody WebPushSubscription subscription) {
 
         System.out.println(">>## " + getEmail());
 
-        subscriptions.put(getEmail(), subscription);
+        subscriptionsRegistry.saveSubscription(getEmail(), subscription);
 
-        System.out.println(subscriptions.values());
+        System.out.println(subscription.getEndpoint());
     }
 
     @GetMapping("/unsubscribe")
     @ResponseStatus(value = HttpStatus.OK)
-    public void unsubscribe() {
+    public void unsubscribe(WebPushSubscription subscription) {
 
         System.out.println(">>** disinscritto");
-        subscriptions.remove(getEmail());
-        System.out.println(subscriptions.values());
+        subscriptionsRegistry.deleteSubscription(getEmail(), subscription);
+        System.out.println(subscription.getEndpoint());
     }
 
-    @PostMapping("/notify-all")
+ /*   @PostMapping("/notify-all")
     public WebPushMessage notifyAll(@RequestBody WebPushMessage message) throws GeneralSecurityException, IOException, JoseException, ExecutionException, InterruptedException {
 
         for (WebPushSubscription subscription: subscriptions.values()) {
@@ -77,7 +68,7 @@ public class SendController {
 
         return message;
     }
-
+*/
     @RequestMapping("/send")
     public String send(@RequestParam("subscriptionJson") String subscriptionJson) {
         Security.addProvider(new BouncyCastleProvider());

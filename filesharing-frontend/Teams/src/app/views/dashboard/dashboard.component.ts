@@ -35,7 +35,7 @@ export class DashboardComponent implements OnInit {
     public active: boolean = false;
 
 
-    readonly VAPID_PUBLIC_KEY = "BAPGG2IY3Vn48d_H8QNuVLRErkBI0L7oDOOCAMUBqYMTMTzukaIAuB5OOcmkdeRICcyQocEwD-oxVc81YXXZPRY";
+    readonly VAPID_PUBLIC_KEY = "BBYCxwATP2vVgw7mMPHJfT6bZrJP2iUV7OP_oxHzEcNFenrX66D8G34CdEmVULNg4WJXfjkeyT0AT9LwavpN8M4=";
 
     private urlparams: UrlSegment[];
 
@@ -204,16 +204,27 @@ export class DashboardComponent implements OnInit {
 
                 this.sub = sub;
 
+
+                let notificationEndPoint = sub.endpoint;
+                let publicKey = sub.getKey('p256dh');
+                let auth = sub.getKey('auth');
+
+                let subPayload = JSON.stringify({ "notificationEndPoint": notificationEndPoint,
+                    "publicKey": publicKey, "auth": auth });
+
+
                 this.active = true;
 
                 //location.reload();
 
                 console.log("Notification Subscription: ", sub.toJSON());
+                console.log("Notification Subscription2: ", subPayload);
                 console.log("endpoint: " + sub.endpoint)
 
-                this.notify('Congratulazioni','Ha abilitato le notifiche push')
+               // this.notify('Congratulazioni','Ha abilitato le notifiche push')
 
                 this.notificationService.addPushSubscriber(sub).subscribe(
+                    //TODO: inserire callback scrittura local storage https://www.positronx.io/angular-8-angularfire2-tutorial-store-user-state-in-local-storage/
                     () => console.log('Sent push subscription object to server.'),
                     err => console.log('Could not send subscription object to server, reason: ', err)
                 );
@@ -241,7 +252,7 @@ export class DashboardComponent implements OnInit {
                     () => console.log('Sent push unsubscription to server.'),
                     err => console.log('Could not send nusubscription object to server, reason: ', err)
                 );
-                this.notify('Congratulazioni','Ha disabilitato le notifiche push')
+                //this.notify('Congratulazioni','Ha disabilitato le notifiche push')
 
             })
             .catch(err => console.error("Could not unsubscribe to notifications", err));

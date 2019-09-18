@@ -2,26 +2,42 @@ package it.eng.unipa.filesharing.model;
 
 public class WebPushSubscription {
 
-    private String notificationEndPoint;
-    private String publicKey;
-    private String auth;
+    private String endpoint;
+    private Keys keys;
 
-    public String getNotificationEndPoint() {
-        return notificationEndPoint;
+    public static  class Keys {
+        String p256dh;
+        String auth;
+
+        public String getP256dh() {
+            return p256dh;
+        }
+
+        public void setP256dh(String p256dh) {
+            this.p256dh = p256dh;
+        }
+
+        public String getAuth() {
+            return auth;
+        }
+
+        public void setAuth(String auth) {
+            this.auth = auth;
+        }
     }
-    public void setNotificationEndPoint(String notificationEndPoint) {
-        this.notificationEndPoint = notificationEndPoint;
+
+    public String getEndpoint() {
+        return endpoint;
     }
-    public String getPublicKey() {
-        return publicKey;
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
     }
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
+
+    public Keys getKeys() {
+        return keys;
     }
-    public String getAuth() {
-        return auth;
-    }
-    public void setAuth(String auth) {
-        this.auth = auth;
+
+    public void setKeys(Keys keys) {
+        this.keys = keys;
     }
 }
