@@ -78,7 +78,12 @@ export class DashboardComponent implements OnInit {
         console.log('#### ' + Notification.permission);
         console.log('#### ' + this.active);
 
+        if(localStorage.getItem('subscribedNotificationService') === 'true'){
+            this.active = true;
+        } else {
+            this.active = false;
 
+        }
 
 
 
@@ -112,7 +117,7 @@ export class DashboardComponent implements OnInit {
     }
 
 
-    notify(titolo, corpo) { //our function to be called on click
+    localNotification(titolo, corpo) { //our function to be called on click
         let options = { //set options
 
             body: corpo,
@@ -124,6 +129,7 @@ export class DashboardComponent implements OnInit {
             err => console.log(err)
         );
     }
+
 
     openDialogTeam(): void {
         const dialogRef = this.dialog.open(TeamDialogComponent, {
@@ -196,36 +202,27 @@ export class DashboardComponent implements OnInit {
 
 
     subscribeToNotifications() {
-
         this.swPush.requestSubscription({
             serverPublicKey: this.VAPID_PUBLIC_KEY
         })
             .then(sub => {
-
                 this.sub = sub;
-
-
-                let notificationEndPoint = sub.endpoint;
-                let publicKey = sub.getKey('p256dh');
-                let auth = sub.getKey('auth');
-
-                let subPayload = JSON.stringify({ "notificationEndPoint": notificationEndPoint,
-                    "publicKey": publicKey, "auth": auth });
-
 
                 this.active = true;
 
-                //location.reload();
-
                 console.log("Notification Subscription: ", sub.toJSON());
-                console.log("Notification Subscription2: ", subPayload);
                 console.log("endpoint: " + sub.endpoint)
 
                // this.notify('Congratulazioni','Ha abilitato le notifiche push')
 
                 this.notificationService.addPushSubscriber(sub).subscribe(
-                    //TODO: inserire callback scrittura local storage https://www.positronx.io/angular-8-angularfire2-tutorial-store-user-state-in-local-storage/
-                    () => console.log('Sent push subscription object to server.'),
+                    () => {
+                        console.log('Sent push subscription object to server.')
+
+                        localStorage.setItem('subscribedNotificationService','true');
+
+                        this.localNotification('Congratulazioni','Hai abilitato le notifiche');
+                    },
                     err => console.log('Could not send subscription object to server, reason: ', err)
                 );
 
@@ -235,27 +232,33 @@ export class DashboardComponent implements OnInit {
 
     }
 
-    // - - - - -  DA ELIMINARE - - - - - - -
-    onSave($event){
-        console.log("Save button is clicked!", $event);
-    }
-    // - - - - - - - - - - - - - - - - - - -
-
     unSubscribeToNotifications() {
         this.swPush.requestSubscription({
             serverPublicKey: this.VAPID_PUBLIC_KEY
         })
             .then(sub => {
+                this.sub = sub;
 
                 this.active = false;
-                this.notificationService.remouvePushSubscribe().subscribe(
-                    () => console.log('Sent push unsubscription to server.'),
-                    err => console.log('Could not send nusubscription object to server, reason: ', err)
+
+                console.log("Notification Subscription: ", sub.toJSON());
+                console.log("endpoint: " + sub.endpoint)
+
+
+                this.notificationService.remouvePushSubscribe(sub).subscribe(
+                    () => {
+                        console.log('Sent push unsubscription object to server.');
+
+                        localStorage.setItem('subscribedNotificationService', 'false');
+
+                        this.localNotification('Congratulazioni','Hai disabilitato le notifiche');
+                    },
+                    err => console.log('Could not send subscription object to server, reason: ', err)
                 );
-                //this.notify('Congratulazioni','Ha disabilitato le notifiche push')
+
 
             })
-            .catch(err => console.error("Could not unsubscribe to notifications", err));
+            .catch(err => console.error("Could not subscribe to notifications", err));
 
     }
 
