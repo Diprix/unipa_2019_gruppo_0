@@ -224,7 +224,6 @@ export class DashboardComponent implements OnInit {
                // this.notify('Congratulazioni','Ha abilitato le notifiche push')
 
                 this.notificationService.addPushSubscriber(sub).subscribe(
-                    //TODO: inserire callback scrittura local storage https://www.positronx.io/angular-8-angularfire2-tutorial-store-user-state-in-local-storage/
                     () => console.log('Sent push subscription object to server.'),
                     err => console.log('Could not send subscription object to server, reason: ', err)
                 );
