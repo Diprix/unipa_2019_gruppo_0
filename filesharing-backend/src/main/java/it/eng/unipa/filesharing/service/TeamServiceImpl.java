@@ -74,6 +74,12 @@ public class TeamServiceImpl implements TeamService{
 		}).collect(Collectors.toList());
 	}
 
+//	@Override
+//	public List<TeamDTO> mySubscription() {
+//		return teamRepository.mySubscription(SecurityContext.getEmail()).stream().map((t)->{
+//			return conversionService.convert(t, TeamDTO.class);
+//		}).collect(Collectors.toList());
+//	}
 
 	@Override
 	public UUID save(TeamDTO teamDTO) {

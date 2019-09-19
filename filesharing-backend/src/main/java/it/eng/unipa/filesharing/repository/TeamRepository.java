@@ -19,9 +19,9 @@ public interface TeamRepository extends JpaRepository<Team, UUID>/*extends Mongo
 	
 	@Query("select t from Team t join t.members m where m.oid.email=:email")
 	List<Team> myTeams(@Param("email")String email);
-//
-//	@Query("select t from Team t, MemberSubscription m where t.email = m.email and m.oid.email=:email")
-//	List<MemberSubscription> mySubscritption(@Param("email")String email);
-//
+////
+//	@Query("select m from membership m, member_subscription ms where m.email= ms.email and m.email=:email")
+//	List<MemberSubscription> mySubscription(@Param("email")String email);
+
 
 }

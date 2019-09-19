@@ -12,6 +12,7 @@ import it.eng.unipa.filesharing.dto.TeamDTO;
 public interface TeamService {
 	
 	List<TeamDTO> myTeams();
+	//List<TeamDTO> mySubscription();
 
 	UUID save(TeamDTO team);
 	
