@@ -132,7 +132,7 @@ export class DashboardComponent implements OnInit {
         let options = { //set options
 
             body: corpo,
-            icon: "assets/images/logo.png", //adding an icon
+            icon: "assets/images/logoNotifiche.png", //adding an icon
             vibrate: [100, 50, 100]
         }
         this._pushNotifications.create(titolo, options).subscribe( //creates a notification
