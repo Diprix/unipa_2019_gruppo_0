@@ -14,6 +14,10 @@ import {PushNotificationsService} from "ng-push";
 import {SwPush} from "@angular/service-worker";
 import {NotificationService} from "../../services/notification.service";
 
+import {KeycloakProfile} from "keycloak-js";
+import {KeycloakService} from "keycloak-angular";
+
+
 
 
 @Component({
@@ -34,6 +38,10 @@ export class DashboardComponent implements OnInit {
     public supported: boolean = this._pushNotifications.isSupported();
     public active: boolean = false;
 
+    profile: KeycloakProfile;
+
+
+
 
     readonly VAPID_PUBLIC_KEY = "BBYCxwATP2vVgw7mMPHJfT6bZrJP2iUV7OP_oxHzEcNFenrX66D8G34CdEmVULNg4WJXfjkeyT0AT9LwavpN8M4=";
 
@@ -48,13 +56,16 @@ export class DashboardComponent implements OnInit {
                 private route: Router,
                 private _pushNotifications: PushNotificationsService,
                 private swPush: SwPush,
-                private notificationService: NotificationService) {
+                private notificationService: NotificationService,
+                private keycloakService: KeycloakService) {
     }
 
     ngOnInit() {
 
-        //this.stato = Notification.permission;
-        //this._pushNotifications.requestPermission();
+        this.profile = this.keycloakService.getKeycloakInstance().profile;
+
+        console.log("------ "+ this.profile.username)
+
         Notification.requestPermission().then(function(result) {
             if (result === 'denied') {
 
@@ -73,12 +84,12 @@ export class DashboardComponent implements OnInit {
                 return;
             }
 
-            // Do something with the granted permission.
         });
+
         console.log('#### ' + Notification.permission);
         console.log('#### ' + this.active);
 
-        if(localStorage.getItem('subscribedNotificationService') === 'true'){
+        if(localStorage.getItem(this.profile.username) === 'true'){
             this.active = true;
         } else {
             this.active = false;
@@ -219,7 +230,10 @@ export class DashboardComponent implements OnInit {
                     () => {
                         console.log('Sent push subscription object to server.')
 
-                        localStorage.setItem('subscribedNotificationService','true');
+
+                        localStorage.setItem(this.profile.username,'true');
+
+
 
                         this.localNotification('Congratulazioni','Hai abilitato le notifiche');
                     },
@@ -249,7 +263,7 @@ export class DashboardComponent implements OnInit {
                     () => {
                         console.log('Sent push unsubscription object to server.');
 
-                        localStorage.setItem('subscribedNotificationService', 'false');
+                        localStorage.setItem(this.profile.username, 'false');
 
                         this.localNotification('Congratulazioni','Hai disabilitato le notifiche');
                     },
