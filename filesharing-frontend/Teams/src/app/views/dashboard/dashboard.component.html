@@ -1,9 +1,6 @@
 <div class="toolbar">
   <div class="flex-spacer"></div>
-  <!-- Aggiunto da @Oscar -->
-  <button (click)="notify('titolo', 'corpo')" type="button" mat-stroked-button class="mat-elevation-z0">
-    <mat-icon>developer_board</mat-icon>
-  </button>
+
 
 
   <!-- Aggiunto da @Oscar -->
@@ -15,15 +12,8 @@
     <mat-icon>notifications_off</mat-icon>
   </button>
 
-  <!--<button *ngIf="stato == 'granted' || stato == 'default' && active == false && supported == true" (click)="subscribeToNotifications()" type="button" mat-stroked-button class="mat-elevation-z0">
-    <mat-icon>notifications</mat-icon>
-  </button>
 
-  <button *ngIf="stato == 'granted' && active == true && supported == true"  (click)="unSubscribeToNotifications()" type="button" mat-stroked-button class="mat-elevation-z0">
-    <mat-icon>notifications_active</mat-icon>
-  </button>-->
-
-  <button *ngIf="stato == 'granted' || stato == 'default' && supported == true" type="button" mat-stroked-button class="mat-elevation-z0">
+  <button *ngIf="(stato == 'granted' || stato == 'default') && supported == true" type="button" mat-stroked-button class="mat-elevation-z0">
 
     <mat-icon *ngIf="active == false; else attivo" (click)="subscribeToNotifications()">notifications</mat-icon>
 

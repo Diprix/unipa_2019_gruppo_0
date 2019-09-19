@@ -69,16 +69,18 @@ self.addEventListener('push', function(event) {
         data = event.data.json();
     }
     var title = data.title;
-    var message = data.message;
-    var icon = "img/FM_logo_2013.png";
+    var message = data.body;
+    var icon = "assets/images/logo.png";
 
     self.clickTarget = data.clickTarget;
 
     event.waitUntil(self.registration.showNotification(title, {
         body: message,
-        tag: 'push-demo',
+        tag: 'Gruppo8',
         icon: icon,
-        badge: icon
+        badge: icon,
+        vibrate: [100, 50, 100]
+
     }));
 });
 

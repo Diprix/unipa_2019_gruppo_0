@@ -14,6 +14,10 @@ import {PushNotificationsService} from "ng-push";
 import {SwPush} from "@angular/service-worker";
 import {NotificationService} from "../../services/notification.service";
 
+import {KeycloakProfile} from "keycloak-js";
+import {KeycloakService} from "keycloak-angular";
+
+
 
 
 @Component({
@@ -34,6 +38,10 @@ export class DashboardComponent implements OnInit {
     public supported: boolean = this._pushNotifications.isSupported();
     public active: boolean = false;
 
+    profile: KeycloakProfile;
+
+
+
 
     readonly VAPID_PUBLIC_KEY = "BBYCxwATP2vVgw7mMPHJfT6bZrJP2iUV7OP_oxHzEcNFenrX66D8G34CdEmVULNg4WJXfjkeyT0AT9LwavpN8M4=";
 
@@ -48,13 +56,16 @@ export class DashboardComponent implements OnInit {
                 private route: Router,
                 private _pushNotifications: PushNotificationsService,
                 private swPush: SwPush,
-                private notificationService: NotificationService) {
+                private notificationService: NotificationService,
+                private keycloakService: KeycloakService) {
     }
 
     ngOnInit() {
 
-        //this.stato = Notification.permission;
-        //this._pushNotifications.requestPermission();
+        this.profile = this.keycloakService.getKeycloakInstance().profile;
+
+        console.log("------ "+ this.profile.username)
+
         Notification.requestPermission().then(function(result) {
             if (result === 'denied') {
 
@@ -73,12 +84,17 @@ export class DashboardComponent implements OnInit {
                 return;
             }
 
-            // Do something with the granted permission.
         });
+
         console.log('#### ' + Notification.permission);
         console.log('#### ' + this.active);
 
+        if(localStorage.getItem(this.profile.username) === 'true'){
+            this.active = true;
+        } else {
+            this.active = false;
 
+        }
 
 
 
@@ -112,7 +128,7 @@ export class DashboardComponent implements OnInit {
     }
 
 
-    notify(titolo, corpo) { //our function to be called on click
+    localNotification(titolo, corpo) { //our function to be called on click
         let options = { //set options
 
             body: corpo,
@@ -124,6 +140,7 @@ export class DashboardComponent implements OnInit {
             err => console.log(err)
         );
     }
+
 
     openDialogTeam(): void {
         const dialogRef = this.dialog.open(TeamDialogComponent, {
@@ -196,35 +213,30 @@ export class DashboardComponent implements OnInit {
 
 
     subscribeToNotifications() {
-
         this.swPush.requestSubscription({
             serverPublicKey: this.VAPID_PUBLIC_KEY
         })
             .then(sub => {
-
                 this.sub = sub;
-
-
-                let notificationEndPoint = sub.endpoint;
-                let publicKey = sub.getKey('p256dh');
-                let auth = sub.getKey('auth');
-
-                let subPayload = JSON.stringify({ "notificationEndPoint": notificationEndPoint,
-                    "publicKey": publicKey, "auth": auth });
-
 
                 this.active = true;
 
-                //location.reload();
-
                 console.log("Notification Subscription: ", sub.toJSON());
-                console.log("Notification Subscription2: ", subPayload);
                 console.log("endpoint: " + sub.endpoint)
 
                // this.notify('Congratulazioni','Ha abilitato le notifiche push')
 
                 this.notificationService.addPushSubscriber(sub).subscribe(
-                    () => console.log('Sent push subscription object to server.'),
+                    () => {
+                        console.log('Sent push subscription object to server.')
+
+
+                        localStorage.setItem(this.profile.username,'true');
+
+
+
+                        this.localNotification('Congratulazioni','Hai abilitato le notifiche');
+                    },
                     err => console.log('Could not send subscription object to server, reason: ', err)
                 );
 
@@ -234,27 +246,33 @@ export class DashboardComponent implements OnInit {
 
     }
 
-    // - - - - -  DA ELIMINARE - - - - - - -
-    onSave($event){
-        console.log("Save button is clicked!", $event);
-    }
-    // - - - - - - - - - - - - - - - - - - -
-
     unSubscribeToNotifications() {
         this.swPush.requestSubscription({
             serverPublicKey: this.VAPID_PUBLIC_KEY
         })
             .then(sub => {
+                this.sub = sub;
 
                 this.active = false;
-                this.notificationService.remouvePushSubscribe().subscribe(
-                    () => console.log('Sent push unsubscription to server.'),
-                    err => console.log('Could not send nusubscription object to server, reason: ', err)
+
+                console.log("Notification Subscription: ", sub.toJSON());
+                console.log("endpoint: " + sub.endpoint)
+
+
+                this.notificationService.remouvePushSubscribe(sub).subscribe(
+                    () => {
+                        console.log('Sent push unsubscription object to server.');
+
+                        localStorage.setItem(this.profile.username, 'false');
+
+                        this.localNotification('Congratulazioni','Hai disabilitato le notifiche');
+                    },
+                    err => console.log('Could not send subscription object to server, reason: ', err)
                 );
-                //this.notify('Congratulazioni','Ha disabilitato le notifiche push')
+
 
             })
-            .catch(err => console.error("Could not unsubscribe to notifications", err));
+            .catch(err => console.error("Could not subscribe to notifications", err));
 
     }
 

@@ -43,7 +43,7 @@ public class SendController {
         System.out.println(subscription.getEndpoint());
     }
 
-    @GetMapping("/unsubscribe")
+    @PostMapping("/unsubscribe")
     @ResponseStatus(value = HttpStatus.OK)
     public void unsubscribe(WebPushSubscription subscription) {
 
