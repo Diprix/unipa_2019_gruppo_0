@@ -20,6 +20,7 @@ import {KeycloakService} from "keycloak-angular";
 
 
 
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -34,11 +35,12 @@ export class DashboardComponent implements OnInit {
     public team: string;
     public bucket: string;
 
-    public stato: String = Notification.permission;
+    public stato: String;// = Notification.permission;
     public supported: boolean = this._pushNotifications.isSupported();
     public active: boolean = false;
 
     profile: KeycloakProfile;
+
 
 
 
@@ -54,8 +56,8 @@ export class DashboardComponent implements OnInit {
                 private syncService: SyncService,
                 private router: ActivatedRoute,
                 private route: Router,
-                private _pushNotifications: PushNotificationsService,
-                private swPush: SwPush,
+                public _pushNotifications: PushNotificationsService,
+                public swPush: SwPush,
                 private notificationService: NotificationService,
                 private keycloakService: KeycloakService) {
     }
@@ -64,27 +66,24 @@ export class DashboardComponent implements OnInit {
 
         this.profile = this.keycloakService.getKeycloakInstance().profile;
 
-        console.log("------ "+ this.profile.username)
+        console.log("------ "+ this.profile.username);
+
+
 
         Notification.requestPermission().then(function(result) {
             if (result === 'denied') {
-
                 console.log('Permission wasn\'t granted. Allow a retry.');
-
-                return;
             }
             if (result === 'default') {
                 console.log('The permission request was dismissed.');
-
-                return;
             }
             if (result === 'granted') {
                 console.log('The permission request accepted.');
-
-                return;
             }
 
         });
+
+        this.stato= Notification.permission;
 
         console.log('#### ' + Notification.permission);
         console.log('#### ' + this.active);
@@ -127,6 +126,9 @@ export class DashboardComponent implements OnInit {
 
     }
 
+    setTest(): void {
+        this.stato = Notification.permission;
+    }
 
     localNotification(titolo, corpo) { //our function to be called on click
         let options = { //set options
