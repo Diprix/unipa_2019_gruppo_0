@@ -3,11 +3,7 @@ package it.eng.unipa.filesharing.service;
 import java.util.List;
 import java.util.UUID;
 
-import it.eng.unipa.filesharing.dto.BucketDTO;
-import it.eng.unipa.filesharing.dto.BucketTypeDTO;
-import it.eng.unipa.filesharing.dto.MembershipDTO;
-import it.eng.unipa.filesharing.dto.ResourceDTO;
-import it.eng.unipa.filesharing.dto.TeamDTO;
+import it.eng.unipa.filesharing.dto.*;
 
 public interface TeamService {
 	
@@ -31,6 +27,8 @@ public interface TeamService {
 	void removeMember(UUID uuid, String otherEmail);
 	
 	void addBucket(UUID uuid,BucketDTO bucketDTO);
+
+	SubscriptionDTO addSubscription(String mail, SubscriptionDTO subscriptionDTO);
 	
 	void removeBucket(UUID uuid, String bucketName);
 
@@ -39,6 +37,8 @@ public interface TeamService {
 	ResourceDTO tree(UUID uuid, String name);
 
 	ResourceDTO addContent(UUID uuid, String bucketName, String parentUniqueId, String name, byte[] content);
+
+	ResourceDTO addSubscription(UUID uuid, String bucketName, String parentUniqueId, String name, byte[] content);
 
 	ResourceDTO addFolder(UUID uuid, String bucketName, String parentUniqueId, String name);
 

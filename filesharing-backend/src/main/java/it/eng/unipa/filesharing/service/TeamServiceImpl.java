@@ -74,12 +74,6 @@ public class TeamServiceImpl implements TeamService{
 		}).collect(Collectors.toList());
 	}
 
-//	@Override
-//	public List<TeamDTO> mySubscription() {
-//		return teamRepository.mySubscription(SecurityContext.getEmail()).stream().map((t)->{
-//			return conversionService.convert(t, TeamDTO.class);
-//		}).collect(Collectors.toList());
-//	}
 
 	@Override
 	public UUID save(TeamDTO teamDTO) {
@@ -186,7 +180,7 @@ public class TeamServiceImpl implements TeamService{
 	}
 
 	@Override
-	public ResourceDTO addContent(UUID uuid, String bucketName,String parentUniqueId,String name,byte[] content) {
+	public ResourceDTO addContent(UUID uuid, String bucketName,String parentUniqueId,String name, byte[] content) {
 		Team team = team(uuid);
 		ContentResource contentResource = team.addContent(bucketName, parentUniqueId, SecurityContext.getEmail(), name, content);
 
@@ -215,40 +209,40 @@ public class TeamServiceImpl implements TeamService{
 
 			Collection<WebPushSubscription> subscriptions = subscriptionsRegistry.getSubscriptions(member.getOid().getEmail());
 
-			for (WebPushSubscription subscription: subscriptions) {
+		//	for (WebPushSubscription subscription: subscriptions) {
 
 				Notification notification = null;
-				try {
-					notification = new Notification(
-							subscription.getEndpoint(),
-							subscription.getKeys().getP256dh(),
-							subscription.getKeys().getAuth(),
-							objectMapper.writeValueAsBytes(message));
-				} catch (NoSuchAlgorithmException e) {
-					e.printStackTrace();
-				} catch (NoSuchProviderException e) {
-					e.printStackTrace();
-				} catch (InvalidKeySpecException e) {
-					e.printStackTrace();
-				} catch (JsonProcessingException e) {
-					e.printStackTrace();
-				}
-
-				try {
-					pushService.send(notification);
-				} catch (GeneralSecurityException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (JoseException e) {
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					e.printStackTrace();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-
+//				try {
+//					notification = new Notification(
+//							subscription.getEndpoint(),
+//							subscription.getKeys().getP256dh(),
+//							subscription.getKeys().getAuth(),
+//							objectMapper.writeValueAsBytes(message));
+//				} catch (NoSuchAlgorithmException e) {
+//					e.printStackTrace();
+//				} catch (NoSuchProviderException e) {
+//					e.printStackTrace();
+//				} catch (InvalidKeySpecException e) {
+//					e.printStackTrace();
+//				} catch (JsonProcessingException e) {
+//					e.printStackTrace();
+//				}
+//
+//				try {
+//					pushService.send(notification);
+//				} catch (GeneralSecurityException e) {
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				} catch (JoseException e) {
+//					e.printStackTrace();
+//				} catch (ExecutionException e) {
+//					e.printStackTrace();
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//
 		}
 
 		return conversionService.convert(contentResource, ResourceDTO.class);

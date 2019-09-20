@@ -1,7 +1,9 @@
 package it.eng.unipa.filesharing.container;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.eng.unipa.filesharing.dto.SubscriptionDTO;
 import it.eng.unipa.filesharing.model.WebPushSubscription;
 import it.eng.unipa.filesharing.service.SubscriptionsRegistryService;
+import it.eng.unipa.filesharing.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +21,15 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static it.eng.unipa.filesharing.context.SecurityContext.getEmail;
 
 @RestController
-public class SendController {
+@RequestMapping("/notification")
+public class NotificationController {
     private static final String PUBLIC_KEY = "BAPGG2IY3Vn48d_H8QNuVLRErkBI0L7oDOOCAMUBqYMTMTzukaIAuB5OOcmkdeRICcyQocEwD-oxVc81YXXZPRY";
     private static final String PRIVATE_KEY = "A7xDGuxMZ4ufflcAhBW23xpoWZNOLwM4Rw2wXjP0y6M";
     private static final String SUBJECT = "Foobarbaz";
     private static final String PAYLOAD = "My fancy message";
     private static PushService pushService = new PushService();
+    private TeamService teamService;
+
 
     @Autowired
     private SubscriptionsRegistryService subscriptionsRegistry;
@@ -32,8 +37,17 @@ public class SendController {
     @Autowired
     private ObjectMapper objectMapper;
 
+
+
+    public NotificationController(@Autowired TeamService teamService) {
+        this.teamService = teamService;
+    }
+
     @PostMapping("/subscribe")
     @ResponseStatus(value = HttpStatus.CREATED)
+    public SubscriptionDTO addSub(@PathVariable("email") String mail,@RequestBody SubscriptionDTO subscription){
+        return teamService.addSubscription(mail,subscription);
+    }
     public void subscribe(@RequestBody WebPushSubscription subscription) {
 
         System.out.println(">>## " + getEmail());
@@ -47,10 +61,8 @@ public class SendController {
     @ResponseStatus(value = HttpStatus.OK)
     public void unsubscribe(WebPushSubscription subscription) {
 
-        System.out.println(">>** disinscritto");
-
+        System.out.println(">>** Sottoscrizione cancellata");
         subscriptionsRegistry.deleteSubscription(getEmail(), subscription);
-
         System.out.println(subscription.getEndpoint());
     }
 
@@ -87,12 +99,5 @@ public class SendController {
             return ExceptionUtils.getStackTrace(e);
         }
     }
-/*
-    // DA IMPLEMENTARE
-    //getResponseEntityResource() RITORNA ID RISORSA DA CUI ESTRARRE NAME E BUCKET
-    @GetMapping("/{uuid}/{bucketName}/{uniqueId}")
-    public ResponseEntity<Resource> download(@PathVariable("uuid") UUID uuid, @PathVariable("bucketName") String bucketName, @PathVariable("uniqueId") String uniqueId) {
-        ResourceDTO resourceDTO = teamService.getContent(uuid,bucketName,uniqueId);
-        return getResponseEntityResource(resourceDTO.getName(), resourceDTO.getContent());
-    }*/
+
 }

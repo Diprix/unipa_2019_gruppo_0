@@ -3,7 +3,7 @@ package it.eng.unipa.filesharing.repository;
 import java.util.List;
 import java.util.UUID;
 
-import it.eng.unipa.filesharing.model.MemberSubscription;
+
 import it.eng.unipa.filesharing.model.Membership;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
