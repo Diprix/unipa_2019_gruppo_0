@@ -14,6 +14,11 @@ import {PushNotificationsService} from "ng-push";
 import {SwPush} from "@angular/service-worker";
 import {NotificationService} from "../../services/notification.service";
 
+import {KeycloakProfile} from "keycloak-js";
+import {KeycloakService} from "keycloak-angular";
+
+
+
 
 
 @Component({
@@ -30,9 +35,14 @@ export class DashboardComponent implements OnInit {
     public team: string;
     public bucket: string;
 
-    public stato: String = Notification.permission;
+    public stato: String;// = Notification.permission;
     public supported: boolean = this._pushNotifications.isSupported();
     public active: boolean = false;
+
+    profile: KeycloakProfile;
+
+
+
 
 
     readonly VAPID_PUBLIC_KEY = "BBYCxwATP2vVgw7mMPHJfT6bZrJP2iUV7OP_oxHzEcNFenrX66D8G34CdEmVULNg4WJXfjkeyT0AT9LwavpN8M4=";
@@ -46,39 +56,39 @@ export class DashboardComponent implements OnInit {
                 private syncService: SyncService,
                 private router: ActivatedRoute,
                 private route: Router,
-                private _pushNotifications: PushNotificationsService,
-                private swPush: SwPush,
-                private notificationService: NotificationService) {
+                public _pushNotifications: PushNotificationsService,
+                public swPush: SwPush,
+                private notificationService: NotificationService,
+                private keycloakService: KeycloakService) {
     }
 
     ngOnInit() {
 
-        //this.stato = Notification.permission;
-        //this._pushNotifications.requestPermission();
+        this.profile = this.keycloakService.getKeycloakInstance().profile;
+
+        console.log("------ "+ this.profile.username);
+
+
+
         Notification.requestPermission().then(function(result) {
             if (result === 'denied') {
-
                 console.log('Permission wasn\'t granted. Allow a retry.');
-
-                return;
             }
             if (result === 'default') {
                 console.log('The permission request was dismissed.');
-
-                return;
             }
             if (result === 'granted') {
                 console.log('The permission request accepted.');
-
-                return;
             }
 
-            // Do something with the granted permission.
         });
+
+        this.stato= Notification.permission;
+
         console.log('#### ' + Notification.permission);
         console.log('#### ' + this.active);
 
-        if(localStorage.getItem('subscribedNotificationService') === 'true'){
+        if(localStorage.getItem(this.profile.username) === 'true'){
             this.active = true;
         } else {
             this.active = false;
@@ -116,12 +126,15 @@ export class DashboardComponent implements OnInit {
 
     }
 
+    setTest(): void {
+        this.stato = Notification.permission;
+    }
 
     localNotification(titolo, corpo) { //our function to be called on click
         let options = { //set options
 
             body: corpo,
-            icon: "assets/images/logo.png", //adding an icon
+            icon: "assets/images/logoNotifiche.png", //adding an icon
             vibrate: [100, 50, 100]
         }
         this._pushNotifications.create(titolo, options).subscribe( //creates a notification
@@ -219,7 +232,10 @@ export class DashboardComponent implements OnInit {
                     () => {
                         console.log('Sent push subscription object to server.')
 
-                        localStorage.setItem('subscribedNotificationService','true');
+
+                        localStorage.setItem(this.profile.username,'true');
+
+
 
                         this.localNotification('Congratulazioni','Hai abilitato le notifiche');
                     },
@@ -249,7 +265,7 @@ export class DashboardComponent implements OnInit {
                     () => {
                         console.log('Sent push unsubscription object to server.');
 
-                        localStorage.setItem('subscribedNotificationService', 'false');
+                        localStorage.setItem(this.profile.username, 'false');
 
                         this.localNotification('Congratulazioni','Hai disabilitato le notifiche');
                     },

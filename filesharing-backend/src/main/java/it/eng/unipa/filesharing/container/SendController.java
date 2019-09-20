@@ -48,7 +48,9 @@ public class SendController {
     public void unsubscribe(WebPushSubscription subscription) {
 
         System.out.println(">>** disinscritto");
+
         subscriptionsRegistry.deleteSubscription(getEmail(), subscription);
+
         System.out.println(subscription.getEndpoint());
     }
 

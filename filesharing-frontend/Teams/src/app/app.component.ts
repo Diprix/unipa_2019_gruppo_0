@@ -7,6 +7,9 @@ import {KeycloakProfile} from "keycloak-js";
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
+
+
+
 export class AppComponent implements OnInit{
   title = 'Teams';
 
@@ -24,4 +27,5 @@ export class AppComponent implements OnInit{
     this.keycloakService.logout(redirectUrl);
     console.log("logout effettuato")
   }
+
 }

@@ -69,8 +69,8 @@ self.addEventListener('push', function(event) {
         data = event.data.json();
     }
     var title = data.title;
-    var message = data.body;
-    var icon = "assets/images/logo.png";
+    var message = data.message;
+    var icon = "assets/images/logoNotifiche.png";
 
     self.clickTarget = data.clickTarget;
 
