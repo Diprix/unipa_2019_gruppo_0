@@ -11,6 +11,8 @@ public interface SubscriptionsRegistryService {
 
     List<SubscriptionDTO> mySubscription();
 
+    List<SubscriptionDTO> mySubscription(String email);
+
     UUID save(SubscriptionDTO webPushSubscription);
     SubscriptionDTO get(UUID uuid);
 

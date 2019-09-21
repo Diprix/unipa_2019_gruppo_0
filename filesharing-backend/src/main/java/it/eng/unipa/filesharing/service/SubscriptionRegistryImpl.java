@@ -1,12 +1,15 @@
 package it.eng.unipa.filesharing.service;
 
 import it.eng.unipa.filesharing.context.SecurityContext;
+import it.eng.unipa.filesharing.dto.ResourceDTO;
 import it.eng.unipa.filesharing.dto.SubscriptionDTO;
 import it.eng.unipa.filesharing.model.Team;
 import it.eng.unipa.filesharing.model.UserRole;
 import it.eng.unipa.filesharing.model.WebPushMessage;
 import it.eng.unipa.filesharing.model.WebPushSubscription;
 import it.eng.unipa.filesharing.repository.SubRepository;
+import it.eng.unipa.filesharing.repository.TeamRepository;
+import it.eng.unipa.filesharing.resource.ContentResource;
 import nl.martijndwars.webpush.Notification;
 import nl.martijndwars.webpush.PushService;
 import org.springframework.core.convert.ConversionService;
@@ -27,6 +30,7 @@ public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
     private SubscriptionsRegistryService subscriptionsRegistryService;
     private SubRepository subRepository;
     private ConversionService conversionService; //Convert JPA
+    private TeamRepository teamRepository;
 
 
     @Override
@@ -47,18 +51,14 @@ public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
         return null;
     }
 
-//    @Override
-//    public List<SubscriptionDTO> mySubscription(String email) {/**/
-//        return mySubscription(new email.stream().map((w)->{
-//            return conversionService.convert(w, SubscriptionDTO.class);
-//        }).collect(Collectors.toList());
-//    }
-public List<UserRole> members = team.getMembers();
-		for (UserRole member: members) {
+    @Override
+    public List<SubscriptionDTO> mySubscription(String email) {/**/
+        return mySubscription(new email.stream().map((w)->{
+            return conversionService.convert(w, SubscriptionDTO.class);
+        }
+    }
 
-        Collection<WebPushSubscription> subscriptions = subscriptionsRegistry.getSubscriptions(member.getOid().getEmail());
 
-        for (WebPushSubscription subscription: subscriptions) {
 
     @Override
     public UUID save(SubscriptionDTO webPushSubscription) {
