@@ -11,6 +11,8 @@ import nl.martijndwars.webpush.Notification;
 import nl.martijndwars.webpush.PushService;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -20,12 +22,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
 
-    private Map<String, Map<String, WebPushSubscription>> subscriptions = new ConcurrentHashMap<>();
-    private SubscriptionRegistryImpl subscriptionsRegistry;
+    //private Map<String, Map<String, WebPushSubscription>> subscriptions = new ConcurrentHashMap<>();
+    private SubscriptionsRegistryService subscriptionsRegistryService;
     private SubRepository subRepository;
-
     private ConversionService conversionService;
 
 
@@ -52,10 +54,10 @@ public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
         WebPushSubscription webPushSubscription = null;
         if(subscriptionDTO.getEmail()!=null) {
             webPushSubscription = webPushSubscription(subscriptionDTO.);
-            webPushSubscription.setEndpoint(subscriptionDTO.getNotification().getEndpoint());
+            webPushSubscription.setEndpoint(subscriptionDTO.getWebPushSubscription().getEndpoint());
             webPushSubscription.setEmail(userEmail);
-            webPushSubscription.setAuth(subscriptionDTO.getNotification().getAuth());
-            webPushSubscription.setAuth(subscriptionDTO.getNotification().getP256dh());
+            webPushSubscription.setAuth(subscriptionDTO.getWebPushSubscription().getAuth());
+            webPushSubscription.setAuth(subscriptionDTO.getWebPushSubscription().getP256dh());
 
         return SubRepository.save(webPushSubscription).getEmail();
     }
@@ -68,6 +70,22 @@ public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
             return conversionService.convert(w, SubscriptionDTO.class);
         }).collect(Collectors.toList());
     }
+
+    @Override
+    public UUID save(SubscriptionDTO webPushSubscription) {
+        return null;
+    }
+
+    @Override
+    public SubscriptionDTO get(UUID uuid) {
+        return null;
+    }
+
+    @Override
+    public SubscriptionDTO addSubscriptions(String userEmail, WebPushSubscription webPushSubscription) {
+        return null;
+    }
+
     @Override
     public void removeSubscriptions(String userEmail, WebPushSubscription subscription) {
 
@@ -117,7 +135,7 @@ public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
         List<UserRole> members = team.getMembers();
         for (UserRole member : members) {
 
-            Collection<WebPushSubscription> subscriptions = subscriptionsRegistry.getSubscriptions(member.getOid().getEmail());
+            Collection<WebPushSubscription> subscriptions = subscriptionsRegistryService.getSubscriptions(member.getOid().getEmail());
 
             //	for (WebPushSubscription subscription: subscriptions) {
 

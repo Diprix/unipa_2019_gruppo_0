@@ -5,25 +5,26 @@ import it.eng.unipa.filesharing.model.WebPushSubscription;
 
 public class SubscriptionDTO {
     private String email;
-    private WebPushSubscription notification;
+    private WebPushSubscription webPushSubscription;
 
 
-    public WebPushSubscription getNotification() {
-        return notification;
+    public WebPushSubscription getWebPushSubscription() {
+        return webPushSubscription;
     }
 
-    public void setNotification(WebPushSubscription notification) {
-        this.notification = notification;
+   // DA SPOSTARE NEL REGISTRY
+    public void setWebPushSubscription(WebPushSubscription webPushSubscription) {
+        this.webPushSubscription = webPushSubscription;
     }
 
 
     public SubscriptionDTO() {
     }
 
-    public SubscriptionDTO(String email, WebPushSubscription notification) {
+    public SubscriptionDTO(String email, WebPushSubscription webPushSubscription) {
         super();
         this.email = email;
-        this.notification = notification;
+        this.webPushSubscription = webPushSubscription;
     }
 
     public String getEmail() {

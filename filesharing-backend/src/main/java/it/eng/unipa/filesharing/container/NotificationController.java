@@ -37,13 +37,6 @@ public class NotificationController {
        //CREO IL SERVIZIO CHE MI GESTISCE LE OPERAZIONI DI SOTTOSCRIZIONE.
     private SubscriptionsRegistryService subscriptionsRegistryService;
 
-    @Autowired
-    private SubscriptionsRegistryService subscriptionsRegistry;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-
 
     public NotificationController(@Autowired SubscriptionsRegistryService subscriptionsRegistryService) {
 
@@ -58,15 +51,15 @@ public class NotificationController {
 
     @PostMapping("/notification/subscribe")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public void addSubscribe(@RequestBody SubscriptionDTO substriptionDTO) {
-        subscriptionsRegistryService.addSubscriptions(getEmail(), substriptionDTO);
+    public void addSubscribe(@RequestBody WebPushSubscription webPushSubscription) {
+        subscriptionsRegistryService.addSubscriptions(getEmail(), webPushSubscription);
         System.out.println("Sottoscrizione registrata per " + getEmail());
     }
 
     @PostMapping("/notification/unsubscribe")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void removeSubscribe(@RequestBody SubscriptionDTO substriptionDTO) {
-        subscriptionsRegistryService.removeSubscriptions(getEmail(), substriptionDTO);
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void removeSubscribe(@RequestBody WebPushSubscription webPushSubscription) {
+        subscriptionsRegistryService.removeSubscriptions(getEmail(), webPushSubscription);
          System.out.println(">>** Sottoscrizione cancellata");
     }
 
@@ -86,42 +79,4 @@ public class NotificationController {
             return ExceptionUtils.getStackTrace(e);
         }
     }
-//
-//    public /*SubscriptionDTO*/ void subscribe(@RequestBody WebPushSubscription subscription) {
-//
-//        System.out.println(">>## " + getEmail());
-//
-//        subscriptionsRegistry.saveSubscription(getEmail(), subscription);
-//
-//        System.out.println(subscription.getEndpoint());
-//    }
-
-//    @PostMapping("/unsubscribe")
-//    @ResponseStatus(value = HttpStatus.OK)
-//    public void unsubscribe(WebPushSubscription subscription) {
-//
-//        System.out.println(">>** Sottoscrizione cancellata");
-//        subscriptionsRegistry.deleteSubscription(getEmail(), subscription);
-//        System.out.println(subscription.getEndpoint());
-//    }
-
- /*   @PostMapping("/notify-all")
-    public WebPushMessage notifyAll(@RequestBody WebPushMessage message) throws GeneralSecurityException, IOException, JoseException, ExecutionException, InterruptedException {
-
-        for (WebPushSubscription subscription: subscriptions.values()) {
-
-            Notification notification = new Notification(
-                    subscription.getNotificationEndPoint(),
-                    subscription.getPublicKey(),
-                    subscription.getAuth(),
-                    objectMapper.writeValueAsBytes(message));
-
-            pushService.send(notification);
-        }
-
-        return message;
-    }
-*/
-
-
 }

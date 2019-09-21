@@ -5,15 +5,18 @@ import it.eng.unipa.filesharing.model.WebPushSubscription;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 public interface SubscriptionsRegistryService {
 
     List<SubscriptionDTO> mySubscription();
 
-    public WebPushSubscription addSubscriptions(String userEmail, SubscriptionDTO subscriptionDTO);
-    public void removeSubscriptions(String userEmail, SubscriptionDTO subscriptionDTO);
+    UUID save(SubscriptionDTO webPushSubscription);
+    SubscriptionDTO get(UUID uuid);
 
-    //
-    public Collection<WebPushSubscription> getSubscriptions(String userEmal);
+    SubscriptionDTO addSubscriptions(String userEmail, WebPushSubscription webPushSubscription);
+    SubscriptionDTO removeSubscriptions(String userEmail, WebPushSubscription webPushSubscription);
+
+    Collection<WebPushSubscription> getSubscriptions(String userEmal);
 
 }
