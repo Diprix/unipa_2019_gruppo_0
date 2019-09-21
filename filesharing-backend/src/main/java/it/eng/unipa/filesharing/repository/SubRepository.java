@@ -13,6 +13,6 @@ public  interface SubRepository extends JpaRepository<WebPushSubscription, Strin
 
 
     @Query("select w from Team t, web_push_subscription w, user_role ur where ur.team_uuid=t.uuid and w.email=ur.email and ur.email=:email")
-    List<WebPushSubscription> mySubscription(@Param("email")String email);
+    List<WebPushSubscription> mySubscriptions(@Param("email")String email);
 
 }

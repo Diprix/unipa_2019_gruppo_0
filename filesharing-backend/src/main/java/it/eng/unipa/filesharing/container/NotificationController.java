@@ -34,9 +34,9 @@ public class NotificationController {
     private static final String PAYLOAD = "My fancy message";
     private static PushService pushService = new PushService();
     private TeamService teamService;
+
        //CREO IL SERVIZIO CHE MI GESTISCE LE OPERAZIONI DI SOTTOSCRIZIONE.
     private SubscriptionsRegistryService subscriptionsRegistryService;
-
 
     public NotificationController(@Autowired SubscriptionsRegistryService subscriptionsRegistryService) {
 
@@ -46,9 +46,9 @@ public class NotificationController {
 
     @GetMapping("/notification")
     public ResponseEntity<List<SubscriptionDTO>> mySubscription(){
-        return new ResponseEntity<List<SubscriptionDTO>>(this.subscriptionsRegistryService.mySubscription(),HttpStatus.OK);
+        return new ResponseEntity<List<SubscriptionDTO>>(this.subscriptionsRegistryService.mySubscription(getEmail()),HttpStatus.OK);
     }
-
+    // METODO DI SOTTOSCRIZIONE
     @PostMapping("/notification/subscribe")
     @ResponseStatus(value = HttpStatus.CREATED)
     public void addSubscribe(@RequestBody WebPushSubscription webPushSubscription) {
@@ -56,6 +56,7 @@ public class NotificationController {
         System.out.println("Sottoscrizione registrata per " + getEmail());
     }
 
+    // METODO DI RIMOZIONE SOTTOSCRIZIONE
     @PostMapping("/notification/unsubscribe")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void removeSubscribe(@RequestBody WebPushSubscription webPushSubscription) {
@@ -63,6 +64,7 @@ public class NotificationController {
          System.out.println(">>** Sottoscrizione cancellata");
     }
 
+    // METODO CHE CONTATTA IL PUSH SERVICE IL QUALE DESTINA IL MESSAGGIO AL CLIENT CORRETTO GRAZIE ALL'ENDPOINT
     @RequestMapping("/notification/send")
     public String send(@RequestParam("subscriptionJson") String subscriptionJson) {
         Security.addProvider(new BouncyCastleProvider());
