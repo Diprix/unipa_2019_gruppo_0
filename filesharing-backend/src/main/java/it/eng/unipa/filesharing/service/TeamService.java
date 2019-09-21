@@ -1,9 +1,11 @@
 package it.eng.unipa.filesharing.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 import it.eng.unipa.filesharing.dto.*;
+import it.eng.unipa.filesharing.model.WebPushSubscription;
 
 public interface TeamService {
 	
@@ -43,6 +45,11 @@ public interface TeamService {
 	ResourceDTO addFolder(UUID uuid, String bucketName, String parentUniqueId, String name);
 
 	ResourceDTO getContent(UUID uuid, String bucketName, String uniqueId);
+
+	public void saveSubscription(String userEmail, WebPushSubscription subscription);
+	public void deleteSubscription(String userEmail, WebPushSubscription subscription);
+
+	public Collection<WebPushSubscription> getSubscriptions(String userEmal);
 	
 	
 }

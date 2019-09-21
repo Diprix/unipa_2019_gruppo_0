@@ -141,6 +141,11 @@ public class TeamServiceImpl implements TeamService{
 
 	}
 
+	@Override
+	public SubscriptionDTO addSubscription(String mail, SubscriptionDTO subscriptionDTO) {
+		return null;
+	}
+
 
 	@Override
 	public void removeBucket(UUID uuid, String name) {
@@ -249,6 +254,11 @@ public class TeamServiceImpl implements TeamService{
 	}
 
 	@Override
+	public ResourceDTO addSubscription(UUID uuid, String bucketName, String parentUniqueId, String name, byte[] content) {
+		return null;
+	}
+
+	@Override
 	public ResourceDTO addFolder(UUID uuid, String bucketName,String parentUniqueId,String name) {
 		Team team = team(uuid);
 		FolderResource folderResource = team.addFolder(bucketName, parentUniqueId, SecurityContext.getEmail(), name);
@@ -261,6 +271,22 @@ public class TeamServiceImpl implements TeamService{
 		Team team = team(uuid);
 		ContentResource contentResource = team.getContent(SecurityContext.getEmail(),bucketName,uniqueId);
 		return (ResourceDTO)conversionService.convert(contentResource,TypeDescriptor.valueOf(ContentResource.class), TypeDescriptor.valueOf(ResourceDTO.class));
+	}
+
+	// IMPLEMETS METODS FOR SUBSCRIPTION TE@MLEADER
+	@Override
+	public void saveSubscription(String userEmail, WebPushSubscription subscription) {
+
+	}
+
+	@Override
+	public void deleteSubscription(String userEmail, WebPushSubscription subscription) {
+
+	}
+
+	@Override
+	public Collection<WebPushSubscription> getSubscriptions(String userEmal) {
+		return null;
 	}
 
 }

@@ -1,16 +1,19 @@
 package it.eng.unipa.filesharing.model;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Entity
-@Table
-public class WebPushSubscription implements Serializable {
+@Table(
+        uniqueConstraints=
+        @UniqueConstraint(columnNames={"id", "email"})
+)
+public class WebPushSubscription {
 
     @Id
     @SequenceGenerator(name="membershipSubscription_seq", initialValue=1, allocationSize=1)
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="membership_Subscription")
     private Long id;
+
 
     //@OneToOne
     @JoinColumn(name = "email")
@@ -18,10 +21,17 @@ public class WebPushSubscription implements Serializable {
     private String auth;
     private String endpoint;
     private String p256dh;
-    //private Keys keys;
 
-   // public static  class Keys {
+    public WebPushSubscription() {
 
+    }
+
+    public WebPushSubscription(String email, String auth, String endpoint, String p256dh) {
+        this.email = email;
+        this.auth = auth;
+        this.endpoint = endpoint;
+        this.p256dh = p256dh;
+    }
 
     public String getEmail() {
         return email;
@@ -53,14 +63,6 @@ public class WebPushSubscription implements Serializable {
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
     }
-
-//    public Keys getKeys() {
-//        return keys;
-//    }
-//
-//    public void setKeys(Keys keys) {
-//        this.keys = keys;
-//    }
 
 
 }

@@ -8,12 +8,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import javax.annotation.PreDestroy;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.PostRemove;
-import javax.persistence.PreRemove;
+import javax.persistence.*;
 
 import it.eng.unipa.filesharing.context.SecurityContext;
 import it.eng.unipa.filesharing.resource.BucketType;
@@ -39,6 +34,9 @@ public class Team {
 	@OneToMany(mappedBy = "team",cascade = CascadeType.ALL,orphanRemoval = true)
 	private List<UserRole> members = new ArrayList<>();
 
+	@ManyToMany(mappedBy = "team",cascade = CascadeType.ALL)
+	private List<WebPushSubscription > webPushSubscription  = new ArrayList<>();
+
 	/*public Team(String uuid,User creator,String name,String description) {
 		this.uuid = UUID.fromString(uuid);
 		this.creator = creator;
@@ -63,6 +61,10 @@ public class Team {
 
 	public List<Bucket> getBuckets() {
 		return Collections.unmodifiableList(buckets);
+	}
+
+	public List<WebPushSubscription> getSubscription() {
+		return Collections.unmodifiableList(webPushSubscription);
 	}
 
 	public String getName() {

@@ -2,21 +2,35 @@ package it.eng.unipa.filesharing.dto;
 
 import it.eng.unipa.filesharing.model.WebPushSubscription;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public class SubscriptionDTO {
     private String email;
     private WebPushSubscription notification;
-    private List<NotifyDTO> notificationPart = new ArrayList<>();
+
+
+    public WebPushSubscription getNotification() {
+        return notification;
+    }
+
+    public void setNotification(WebPushSubscription notification) {
+        this.notification = notification;
+    }
 
 
     public SubscriptionDTO() {
     }
 
-    public SubscriptionDTO(String email, List<NotifyDTO> notificationPart) {
+    public SubscriptionDTO(String email, WebPushSubscription notification) {
+        super();
         this.email = email;
-        this.notificationPart = notificationPart;
+        this.notification = notification;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
