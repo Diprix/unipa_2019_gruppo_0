@@ -1,49 +1,67 @@
 package it.eng.unipa.filesharing.service;
 
-import it.eng.unipa.filesharing.context.SecurityContext;
-import it.eng.unipa.filesharing.dto.ResourceDTO;
 import it.eng.unipa.filesharing.dto.SubscriptionDTO;
-import it.eng.unipa.filesharing.model.Team;
-import it.eng.unipa.filesharing.model.UserRole;
-import it.eng.unipa.filesharing.model.WebPushMessage;
 import it.eng.unipa.filesharing.model.WebPushSubscription;
 import it.eng.unipa.filesharing.repository.SubRepository;
-import it.eng.unipa.filesharing.repository.TeamRepository;
-import it.eng.unipa.filesharing.resource.ContentResource;
-import nl.martijndwars.webpush.Notification;
-import nl.martijndwars.webpush.PushService;
+import nl.martijndwars.webpush.Subscription;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.spec.InvalidKeySpecException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
 
-    private SubscriptionsRegistryService subscriptionsRegistryService;
-    private SubRepository subRepository;
-    private ConversionService conversionService; //Convert JPA
-    private TeamRepository teamRepository;
+    @Autowired SubscriptionsRegistryService subscriptionsRegistryService;
+    @Autowired ConversionService conversionService;
+    @Autowired SubRepository subRepository;
 
 
-    @Override
-    public SubscriptionDTO addSubscriptions(String userEmail, WebPushSubscription webPushSubscription) {
-        SubscriptionDTO subscriptionDTO = null;
-            subscriptionDTO = new SubscriptionDTO(userEmail, webPushSubscription);
-            return subscriptionDTO;
+    public SubscriptionRegistryImpl(@Autowired SubRepository subRepository, @Autowired ConversionService conversionService, @Autowired SubscriptionsRegistryService subscriptionsRegistryService) {
+        this.subRepository = subRepository;
+        this.conversionService = conversionService;
+        this.subscriptionsRegistryService = subscriptionsRegistryService;
 
     }
 
     @Override
-    public SubscriptionDTO removeSubscriptions(String userEmail, WebPushSubscription webPushSubscription) {
+    public List<SubscriptionDTO> mySubscription() {
         return null;
+    }
+
+    @Override
+    public List<SubscriptionDTO> mySubscription(String email) {
+        return null;
+    }
+
+
+    @Override
+    public SubscriptionDTO get(UUID uuid) {
+        return null;
+    }
+
+    @Override
+    public WebPushSubscription addSubscriptions(String userEmail, Subscription subscription) {
+        WebPushSubscription webPushSubscription= null;
+        webPushSubscription.setEmail(userEmail);
+        webPushSubscription.setEndpoint(subscription.endpoint);
+        webPushSubscription.setAuth(subscription.keys.auth);
+        webPushSubscription.setP256dh(subscription.keys.p256dh);
+        return webPushSubscription;
+    }
+
+    @Override
+    public SubscriptionDTO removeSubscriptions(String userEmail, Subscription subscription) {
+        WebPushSubscription webPushSubscription= null;
+        webPushSubscription.setEmail(userEmail);
+        webPushSubscription.setEndpoint(subscription.endpoint);
+        webPushSubscription.setAuth(subscription.keys.auth);
+        webPushSubscription.setP256dh(subscription.keys.p256dh);
+        return conversionService.convert(webPushSubscription, SubscriptionDTO.class);
     }
 
     @Override
@@ -52,23 +70,12 @@ public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
     }
 
     @Override
-    public List<SubscriptionDTO> mySubscription(String email) {/**/
-        return mySubscription(new email.stream().map((w)->{
-            return conversionService.convert(w, SubscriptionDTO.class);
-        }
-    }
+    public UUID save(SubscriptionDTO subscriptionDTO) {
+        WebPushSubscription webPushSubscription = null;
+        webPushSubscription.setEmail(subscriptionDTO.getEmail());
 
 
-
-    @Override
-    public UUID save(SubscriptionDTO webPushSubscription) {
         return null;
     }
-
-    @Override
-    public SubscriptionDTO get(UUID uuid) {
-        return null;
-    }
-
 
 }

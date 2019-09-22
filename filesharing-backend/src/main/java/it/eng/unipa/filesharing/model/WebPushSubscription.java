@@ -1,6 +1,8 @@
 package it.eng.unipa.filesharing.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(
@@ -10,21 +12,17 @@ import javax.persistence.*;
 public class WebPushSubscription {
 
     @Id
-    @SequenceGenerator(name="membershipSubscription_seq", initialValue=1, allocationSize=1)
-    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="membership_Subscription")
+    @SequenceGenerator(name="webPushSubscription_seq", initialValue=1, allocationSize=1)
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="webPushSubscription_seq")
     private Long id;
 
-
-    //@OneToOne
-    @JoinColumn(name = "email")
+    @ManyToMany(mappedBy = "id",cascade = CascadeType.ALL)
+    //private List<WebPushSubscription > webPushSubscription  = new ArrayList<>();
     private String email;
     private String auth;
     private String endpoint;
     private String p256dh;
 
-    public WebPushSubscription() {
-
-    }
 
     public WebPushSubscription(String email, String auth, String endpoint, String p256dh) {
         this.email = email;
