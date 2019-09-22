@@ -5,17 +5,17 @@
 
   <!-- Aggiunto da @Oscar -->
   <button *ngIf="supported == false" type="button" mat-stroked-button class="mat-elevation-z0">
-    <mat-icon>notifications_none</mat-icon>
+    <mat-icon>notifications_important</mat-icon>
   </button>
 
-  <button *ngIf="stato == 'denied' && supported == true" type="button" mat-stroked-button class="mat-elevation-z0" (click)="onSave($event)">
+  <button *ngIf="stato == 'denied' && supported == true" type="button" mat-stroked-button class="mat-elevation-z0">
     <mat-icon>notifications_off</mat-icon>
   </button>
 
 
   <button *ngIf="(stato == 'granted' || stato == 'default') && supported == true" type="button" mat-stroked-button class="mat-elevation-z0">
 
-    <mat-icon *ngIf="active == false; else attivo" (click)="subscribeToNotifications()">notifications</mat-icon>
+    <mat-icon *ngIf="active == false; else attivo" (click)="subscribeToNotifications()">notifications_none</mat-icon>
 
     <ng-template #attivo ><mat-icon (click)="unSubscribeToNotifications()" >notifications_active</mat-icon></ng-template>
   </button>

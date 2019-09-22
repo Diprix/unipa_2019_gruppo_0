@@ -85,6 +85,65 @@ public class TeamServiceImpl implements TeamService{
 		}else {
 			team = new Team(SecurityContext.getEmail(), teamDTO.getName(), teamDTO.getDescription());
 			for(UserRoleDTO x: teamDTO.getMembers()) {
+				PushService pushService = new PushService();
+
+				try {
+					pushService.setPublicKey("BBYCxwATP2vVgw7mMPHJfT6bZrJP2iUV7OP_oxHzEcNFenrX66D8G34CdEmVULNg4WJXfjkeyT0AT9LwavpN8M4=");
+					pushService.setPrivateKey("AKYLHgp-aV3kOys9Oy6QgxNI6OGIlOB3G6kjGvhl57j_");
+
+				} catch (NoSuchAlgorithmException e) {
+					e.printStackTrace();
+				} catch (NoSuchProviderException e) {
+					e.printStackTrace();
+				} catch (InvalidKeySpecException e) {
+					e.printStackTrace();
+				}
+
+				WebPushMessage message = new WebPushMessage();
+				message.title = "Sei stato invitato in un Team";
+				message.message = SecurityContext.getEmail() + " ti ha invitato a far parte del suo Team ";
+
+
+				List<UserRole> members = team.getMembers();
+				for (UserRole member: members) {
+
+					Collection<WebPushSubscription> subscriptions = subscriptionsRegistry.getSubscriptions(x.getEmail());
+
+					for (WebPushSubscription subscription: subscriptions) {
+
+						Notification notification = null;
+						try {
+							notification = new Notification(
+									subscription.getEndpoint(),
+									subscription.getKeys().getP256dh(),
+									subscription.getKeys().getAuth(),
+									objectMapper.writeValueAsBytes(message));
+						} catch (NoSuchAlgorithmException e) {
+							e.printStackTrace();
+						} catch (NoSuchProviderException e) {
+							e.printStackTrace();
+						} catch (InvalidKeySpecException e) {
+							e.printStackTrace();
+						} catch (JsonProcessingException e) {
+							e.printStackTrace();
+						}
+
+						try {
+							pushService.send(notification);
+						} catch (GeneralSecurityException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						} catch (JoseException e) {
+							e.printStackTrace();
+						} catch (ExecutionException e) {
+							e.printStackTrace();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+
+				}
 				team.inviteMember(SecurityContext.getEmail(), x.getEmail(), x.isAdmin());
 			}
 		}
@@ -101,7 +160,11 @@ public class TeamServiceImpl implements TeamService{
 	@Override
 	public void inviteMember(UUID uuid, String otherEmail,boolean admin) {
 		Team team = team(uuid);
+
+
+
 		team.inviteMember(SecurityContext.getEmail(), otherEmail, admin);
+
 	}
 
 	@Override
@@ -109,13 +172,134 @@ public class TeamServiceImpl implements TeamService{
 		Team team = team(uuid);
 		boolean esito = team.acceptInvite(SecurityContext.getEmail(),SecurityContext.getLongName());
 		team.getBuckets().forEach(x-> x.addMembership(SecurityContext.getEmail(), true, true));
+
+		PushService pushService = new PushService();
+
+		try {
+			pushService.setPublicKey("BBYCxwATP2vVgw7mMPHJfT6bZrJP2iUV7OP_oxHzEcNFenrX66D8G34CdEmVULNg4WJXfjkeyT0AT9LwavpN8M4=");
+			pushService.setPrivateKey("AKYLHgp-aV3kOys9Oy6QgxNI6OGIlOB3G6kjGvhl57j_");
+
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (NoSuchProviderException e) {
+			e.printStackTrace();
+		} catch (InvalidKeySpecException e) {
+			e.printStackTrace();
+		}
+
+		WebPushMessage message = new WebPushMessage();
+		message.title = "Invito accettato";
+		message.message = SecurityContext.getEmail() + " ha accettato il tuo invito";
+
+
+		List<UserRole> members = team.getMembers();
+		for (UserRole member: members) {
+
+			Collection<WebPushSubscription> subscriptions = subscriptionsRegistry.getSubscriptions(member.getOid().getEmail());
+
+			for (WebPushSubscription subscription: subscriptions) {
+
+				Notification notification = null;
+				try {
+					notification = new Notification(
+							subscription.getEndpoint(),
+							subscription.getKeys().getP256dh(),
+							subscription.getKeys().getAuth(),
+							objectMapper.writeValueAsBytes(message));
+				} catch (NoSuchAlgorithmException e) {
+					e.printStackTrace();
+				} catch (NoSuchProviderException e) {
+					e.printStackTrace();
+				} catch (InvalidKeySpecException e) {
+					e.printStackTrace();
+				} catch (JsonProcessingException e) {
+					e.printStackTrace();
+				}
+
+				try {
+					pushService.send(notification);
+				} catch (GeneralSecurityException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (JoseException e) {
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+
 		teamRepository.save(team);
+
 	}
 
 	@Override
 	public void rejectInvite(UUID uuid) {
 		Team team = team(uuid);
 		boolean esito = team.rejectInvite(SecurityContext.getEmail());
+		PushService pushService = new PushService();
+
+		try {
+			pushService.setPublicKey("BBYCxwATP2vVgw7mMPHJfT6bZrJP2iUV7OP_oxHzEcNFenrX66D8G34CdEmVULNg4WJXfjkeyT0AT9LwavpN8M4=");
+			pushService.setPrivateKey("AKYLHgp-aV3kOys9Oy6QgxNI6OGIlOB3G6kjGvhl57j_");
+
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (NoSuchProviderException e) {
+			e.printStackTrace();
+		} catch (InvalidKeySpecException e) {
+			e.printStackTrace();
+		}
+
+		WebPushMessage message = new WebPushMessage();
+		message.title = "Invito rifiutato";
+		message.message = SecurityContext.getEmail() + " ha rifiutato il tuo invito";
+
+
+		List<UserRole> members = team.getMembers();
+		for (UserRole member: members) {
+
+			Collection<WebPushSubscription> subscriptions = subscriptionsRegistry.getSubscriptions(member.getOid().getEmail());
+
+			for (WebPushSubscription subscription: subscriptions) {
+
+				Notification notification = null;
+				try {
+					notification = new Notification(
+							subscription.getEndpoint(),
+							subscription.getKeys().getP256dh(),
+							subscription.getKeys().getAuth(),
+							objectMapper.writeValueAsBytes(message));
+				} catch (NoSuchAlgorithmException e) {
+					e.printStackTrace();
+				} catch (NoSuchProviderException e) {
+					e.printStackTrace();
+				} catch (InvalidKeySpecException e) {
+					e.printStackTrace();
+				} catch (JsonProcessingException e) {
+					e.printStackTrace();
+				}
+
+				try {
+					pushService.send(notification);
+				} catch (GeneralSecurityException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (JoseException e) {
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
 	}
 
 	@Override
@@ -176,7 +360,10 @@ public class TeamServiceImpl implements TeamService{
 	@Override
 	public void addMembership(UUID uuid, String bucketName, MembershipDTO membershipDTO) {
 		Team team = team(uuid);
+
 		team.addMembership(SecurityContext.getEmail(), bucketName, membershipDTO.getEmail(), membershipDTO.isPermissionCreate(), membershipDTO.isPermissionDelete());
+
+
 	}
 
 	@Override
