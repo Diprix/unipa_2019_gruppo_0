@@ -85,7 +85,12 @@ public class TeamServiceImpl implements TeamService{
 		}else {
 			team = new Team(SecurityContext.getEmail(), teamDTO.getName(), teamDTO.getDescription());
 			for(UserRoleDTO x: teamDTO.getMembers()) {
+
+				inviteNotification("Sei stato invitato in un Team",SecurityContext.getLongName() + " ti ha invitato a far parte del team " + teamDTO.getName(), x.getEmail());
+
+
 				team.inviteMember(SecurityContext.getEmail(), x.getEmail(), x.isAdmin());
+
 			}
 		}
 
@@ -109,6 +114,7 @@ public class TeamServiceImpl implements TeamService{
 		Team team = team(uuid);
 		boolean esito = team.acceptInvite(SecurityContext.getEmail(),SecurityContext.getLongName());
 		team.getBuckets().forEach(x-> x.addMembership(SecurityContext.getEmail(), true, true));
+		sendNotification("Invito accettato",SecurityContext.getLongName() + " si è unito al tuo team",uuid);
 		teamRepository.save(team);
 	}
 
@@ -116,6 +122,8 @@ public class TeamServiceImpl implements TeamService{
 	public void rejectInvite(UUID uuid) {
 		Team team = team(uuid);
 		boolean esito = team.rejectInvite(SecurityContext.getEmail());
+
+		sendNotification("Invito Rifiutato",SecurityContext.getLongName() + " ha rifiutato l'invito",uuid);
 	}
 
 	@Override
@@ -184,66 +192,8 @@ public class TeamServiceImpl implements TeamService{
 		Team team = team(uuid);
 		ContentResource contentResource = team.addContent(bucketName, parentUniqueId, SecurityContext.getEmail(), name, content);
 
-		//TODO: spostare in opportuno service con gestione eventi di notifica
-		PushService pushService = new PushService();
+		sendNotification("Nuovo File","Aggiunto il file " + name + " da " + SecurityContext.getLongName(),uuid);
 
-			try {
-				pushService.setPublicKey("BBYCxwATP2vVgw7mMPHJfT6bZrJP2iUV7OP_oxHzEcNFenrX66D8G34CdEmVULNg4WJXfjkeyT0AT9LwavpN8M4=");
-				pushService.setPrivateKey("AKYLHgp-aV3kOys9Oy6QgxNI6OGIlOB3G6kjGvhl57j_");
-
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			} catch (NoSuchProviderException e) {
-				e.printStackTrace();
-			} catch (InvalidKeySpecException e) {
-				e.printStackTrace();
-			}
-
-		WebPushMessage message = new WebPushMessage();
-			message.title = "Nuovo File";
-			message.message = "Aggiunto il file " + name + " da utente " + SecurityContext.getEmail();
-
-
-		List<UserRole> members = team.getMembers();
-		for (UserRole member: members) {
-
-			Collection<WebPushSubscription> subscriptions = subscriptionsRegistry.getSubscriptions(member.getOid().getEmail());
-
-			for (WebPushSubscription subscription: subscriptions) {
-
-				Notification notification = null;
-				try {
-					notification = new Notification(
-							subscription.getEndpoint(),
-							subscription.getKeys().getP256dh(),
-							subscription.getKeys().getAuth(),
-							objectMapper.writeValueAsBytes(message));
-				} catch (NoSuchAlgorithmException e) {
-					e.printStackTrace();
-				} catch (NoSuchProviderException e) {
-					e.printStackTrace();
-				} catch (InvalidKeySpecException e) {
-					e.printStackTrace();
-				} catch (JsonProcessingException e) {
-					e.printStackTrace();
-				}
-
-				try {
-					pushService.send(notification);
-				} catch (GeneralSecurityException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} catch (JoseException e) {
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					e.printStackTrace();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-
-		}
 
 		return conversionService.convert(contentResource, ResourceDTO.class);
 	}
@@ -261,6 +211,147 @@ public class TeamServiceImpl implements TeamService{
 		Team team = team(uuid);
 		ContentResource contentResource = team.getContent(SecurityContext.getEmail(),bucketName,uniqueId);
 		return (ResourceDTO)conversionService.convert(contentResource,TypeDescriptor.valueOf(ContentResource.class), TypeDescriptor.valueOf(ResourceDTO.class));
+	}
+
+
+	public void sendNotification(String titolo, String messaggio, UUID uuid){
+
+
+		//TODO: spostare in opportuno service con gestione eventi di notifica
+		PushService pushService = new PushService();
+
+		try {
+			pushService.setPublicKey("BBYCxwATP2vVgw7mMPHJfT6bZrJP2iUV7OP_oxHzEcNFenrX66D8G34CdEmVULNg4WJXfjkeyT0AT9LwavpN8M4=");
+			pushService.setPrivateKey("AKYLHgp-aV3kOys9Oy6QgxNI6OGIlOB3G6kjGvhl57j_");
+
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (NoSuchProviderException e) {
+			e.printStackTrace();
+		} catch (InvalidKeySpecException e) {
+			e.printStackTrace();
+		}
+
+		WebPushMessage message = new WebPushMessage();
+		message.title = titolo;
+		message.message = messaggio;
+
+
+		Team team = team(uuid);
+		List<UserRole> members = team.getMembers();
+
+		for (UserRole member: members) {
+			System.out.println(">>>>>>>> " + member.getOid().getEmail() + " " + SecurityContext.getEmail());
+			if (member.getOid().getEmail() != SecurityContext.getEmail()){
+				Collection<WebPushSubscription> subscriptions = subscriptionsRegistry.getSubscriptions(member.getOid().getEmail());
+
+				for (WebPushSubscription subscription: subscriptions) {
+					System.out.println("Invio a  " + member.getOid().getEmail() + " Sono: " + SecurityContext.getEmail());
+					Notification notification = null;
+					if(true){
+						try {
+							notification = new Notification(
+									subscription.getEndpoint(),
+									subscription.getKeys().getP256dh(),
+									subscription.getKeys().getAuth(),
+									objectMapper.writeValueAsBytes(message));
+						} catch (NoSuchAlgorithmException e) {
+							e.printStackTrace();
+						} catch (NoSuchProviderException e) {
+							e.printStackTrace();
+						} catch (InvalidKeySpecException e) {
+							e.printStackTrace();
+						} catch (JsonProcessingException e) {
+							e.printStackTrace();
+						}
+
+						try {
+							pushService.send(notification);
+						} catch (GeneralSecurityException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						} catch (JoseException e) {
+							e.printStackTrace();
+						} catch (ExecutionException e) {
+							e.printStackTrace();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+
+				}
+			} else {
+				System.out.println("************* non invio la notifica a te stesso...");
+			}
+
+		}
+
+	}
+
+	public void inviteNotification(String titolo, String messaggio, String destinatario){
+
+
+		//TODO: spostare in opportuno service con gestione eventi di notifica
+		PushService pushService = new PushService();
+
+		try {
+			pushService.setPublicKey("BBYCxwATP2vVgw7mMPHJfT6bZrJP2iUV7OP_oxHzEcNFenrX66D8G34CdEmVULNg4WJXfjkeyT0AT9LwavpN8M4=");
+			pushService.setPrivateKey("AKYLHgp-aV3kOys9Oy6QgxNI6OGIlOB3G6kjGvhl57j_");
+
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (NoSuchProviderException e) {
+			e.printStackTrace();
+		} catch (InvalidKeySpecException e) {
+			e.printStackTrace();
+		}
+
+		WebPushMessage message = new WebPushMessage();
+		message.title = titolo;
+		message.message = messaggio;
+
+	Collection<WebPushSubscription> subscriptions = subscriptionsRegistry.getSubscriptions(destinatario);
+
+				for (WebPushSubscription subscription: subscriptions) {
+
+					Notification notification = null;
+					if(true){
+						try {
+							notification = new Notification(
+									subscription.getEndpoint(),
+									subscription.getKeys().getP256dh(),
+									subscription.getKeys().getAuth(),
+									objectMapper.writeValueAsBytes(message));
+						} catch (NoSuchAlgorithmException e) {
+							e.printStackTrace();
+						} catch (NoSuchProviderException e) {
+							e.printStackTrace();
+						} catch (InvalidKeySpecException e) {
+							e.printStackTrace();
+						} catch (JsonProcessingException e) {
+							e.printStackTrace();
+						}
+
+						try {
+							pushService.send(notification);
+						} catch (GeneralSecurityException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						} catch (JoseException e) {
+							e.printStackTrace();
+						} catch (ExecutionException e) {
+							e.printStackTrace();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+
+				}
+
+
+
 	}
 
 }

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {KeycloakService} from "keycloak-angular";
 import {KeycloakProfile} from "keycloak-js";
 
@@ -7,6 +7,8 @@ import {KeycloakProfile} from "keycloak-js";
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
+
+
 
 export class AppComponent implements OnInit{
   title = 'Teams';
@@ -22,10 +24,8 @@ export class AppComponent implements OnInit{
   logout(){
     let redirectUrl= window.location.protocol + "//" + window.location.host;
     console.log(redirectUrl);
-
     this.keycloakService.logout(redirectUrl);
     console.log("logout effettuato")
   }
-
 
 }
