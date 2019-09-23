@@ -232,10 +232,7 @@ export class DashboardComponent implements OnInit {
                     () => {
                         console.log('Sent push subscription object to server.')
 
-
                         localStorage.setItem(this.profile.username,'true');
-
-
 
                         this.localNotification('Congratulazioni','Hai abilitato le notifiche');
                     },
