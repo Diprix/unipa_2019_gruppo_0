@@ -46,7 +46,7 @@ public class NotificationController {
     }
 
 
-    @GetMapping("/notification")
+    @GetMapping("")
     public ResponseEntity<List<SubscriptionDTO>> mySubscription(){
         return new ResponseEntity<List<SubscriptionDTO>>(this.subscriptionsRegistryService.mySubscription(getEmail()),HttpStatus.OK);
     }

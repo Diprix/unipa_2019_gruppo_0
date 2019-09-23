@@ -24,11 +24,10 @@ public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
     TeamRepository teamRepository;
 
 
-    public SubscriptionRegistryImpl(@Autowired TeamRepository teamRepository, @Autowired ConversionService conversionService, @Autowired SubscriptionsRegistryService subscriptionsRegistryService) {
+    public SubscriptionRegistryImpl(@Autowired TeamRepository teamRepository, @Autowired ConversionService conversionService) {
         //this.subRepository = subRepository;
         this.teamRepository =teamRepository;
         this.conversionService = conversionService;
-        this.subscriptionsRegistryService = subscriptionsRegistryService;
 
     }
 
