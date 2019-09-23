@@ -83,7 +83,7 @@ import {MatListModule} from "@angular/material/list";
         PushNotificationsModule, // add it to imports
         MatMenuModule,
 
-        environment.production ? ServiceWorkerModule.register('/sw-register.js') : [],
+        environment.production ? ServiceWorkerModule.register('/ngsw-worker.js') : [],
         MatListModule
     ],
   providers:  [
