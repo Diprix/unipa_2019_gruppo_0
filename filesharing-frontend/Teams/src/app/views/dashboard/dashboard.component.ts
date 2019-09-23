@@ -261,7 +261,7 @@ export class DashboardComponent implements OnInit {
                 console.log("endpoint: " + sub.endpoint)
 
 
-                this.notificationService.remouvePushSubscribe(sub).subscribe(
+                this.notificationService.removePushSubscribe(sub).subscribe(
                     () => {
                         console.log('Sent push unsubscription object to server.');
 

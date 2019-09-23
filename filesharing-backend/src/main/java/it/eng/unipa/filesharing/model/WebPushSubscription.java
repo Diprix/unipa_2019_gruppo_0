@@ -16,8 +16,7 @@ public class WebPushSubscription {
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="webPushSubscription_seq")
     private Long id;
 
-    @ManyToMany(mappedBy = "id",cascade = CascadeType.ALL)
-    //private List<WebPushSubscription > webPushSubscription  = new ArrayList<>();
+    @ManyToMany
     private String email;
     private String auth;
     private String endpoint;

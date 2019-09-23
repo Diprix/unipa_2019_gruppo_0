@@ -16,7 +16,7 @@ export class NotificationService {
     return this.http.post('/api/notification/subscribe', sub);
   }
 
-  remouvePushSubscribe(sub: any) {
+  removePushSubscribe(sub: any) {
     return this.http.post('/api/notification/unsubscribe', sub);
   }
 

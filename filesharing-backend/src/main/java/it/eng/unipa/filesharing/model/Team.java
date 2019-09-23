@@ -34,8 +34,7 @@ public class Team {
 	@OneToMany(mappedBy = "team",cascade = CascadeType.ALL,orphanRemoval = true)
 	private List<UserRole> members = new ArrayList<>();
 
-	@ManyToMany(mappedBy = "team",cascade = CascadeType.ALL)
-	private List<WebPushSubscription > webPushSubscription  = new ArrayList<>();
+
 
 	/*public Team(String uuid,User creator,String name,String description) {
 		this.uuid = UUID.fromString(uuid);
@@ -63,9 +62,9 @@ public class Team {
 		return Collections.unmodifiableList(buckets);
 	}
 
-	public List<WebPushSubscription> getSubscription() {
-		return Collections.unmodifiableList(webPushSubscription);
-	}
+//	public List<WebPushSubscription> getSubscription() {
+//		return Collections.unmodifiableList(webPushSubscription);
+//	}
 
 	public String getName() {
 		return name;

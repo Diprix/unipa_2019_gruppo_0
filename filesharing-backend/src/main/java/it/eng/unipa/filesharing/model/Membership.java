@@ -1,11 +1,9 @@
 package it.eng.unipa.filesharing.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Entity
 public class Membership {
@@ -15,10 +13,15 @@ public class Membership {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="membership_seq")
 	private Long id;
 	
-	private String email;
+	private String email; // ERRORE CONCETTUALE SORBELLIANO
 	
 	@ManyToOne
 	private Bucket bucket;
+
+
+	@ManyToMany(mappedBy = "membership",cascade = CascadeType.ALL)
+	private List<WebPushSubscription> webPushSubscriptions = new ArrayList<WebPushSubscription>();
+
 	
 	private boolean permissionCreate;
 	private boolean permissionDelete;
@@ -55,6 +58,7 @@ public class Membership {
 	public void setPermissionDelete(boolean permissionDelete) {
 		this.permissionDelete = permissionDelete;
 	}
+
 	
 	/*public boolean isNotification() {
 		return notification;
