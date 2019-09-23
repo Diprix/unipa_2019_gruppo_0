@@ -2,9 +2,9 @@ package it.eng.unipa.filesharing.service;
 
 import it.eng.unipa.filesharing.context.SecurityContext;
 import it.eng.unipa.filesharing.dto.SubscriptionDTO;
+import it.eng.unipa.filesharing.model.Team;
 import it.eng.unipa.filesharing.model.WebPushSubscription;
 import it.eng.unipa.filesharing.repository.SubRepository;
-import it.eng.unipa.filesharing.repository.TeamRepository;
 import nl.martijndwars.webpush.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -35,27 +35,35 @@ public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
     // Collection<WebPushSubscription> subscriptions = subscriptionsRegistryService.getSubscriptions(member.getOid().getEmail());
     @Override
     public List<WebPushSubscription> mySubscriptions() {
-        return null;
+        subRepository.findAll();
+        return mySubscriptions();
     }
+
 
     @Override
     public WebPushSubscription addSubscriptions(String userEmail, Subscription subscription) {
         WebPushSubscription webPushSubscription = new WebPushSubscription(userEmail, subscription.keys.auth, subscription.endpoint, subscription.keys.p256dh);
         System.out.println(webPushSubscription.toString());
-        return webPushSubscription;
+        return subRepository.save(webPushSubscription);
+    }
+
+    @Override
+    public String saveSub(SubscriptionDTO subscriptionDTO) {
+        WebPushSubscription webPushSubscription = new WebPushSubscription(SecurityContext.getEmail(), subscriptionDTO.getWebPushSubscription().getEndpoint(),
+                subscriptionDTO.getWebPushSubscription().getAuth(),subscriptionDTO.getWebPushSubscription().getP256dh());
+                System.out.println(webPushSubscription.toString());
+        return subRepository.save(webPushSubscription).getEmail();
     }
 
 
     @Override
     public void removeSubscriptions(String userEmail, Subscription subscription) {
-//        WebPushSubscription webPushSubscription= null;
-//        webPushSubscription.setEmail(userEmail);
-//        webPushSubscription.setEndpoint(subscription.endpoint);
-//        webPushSubscription.setAuth(subscription.keys.auth);
-//        webPushSubscription.setP256dh(subscription.keys.p256dh);
-//        return conversionService.convert(webPushSubscription, SubscriptionDTO.class);
-        System.out.println("Cordiali Saluti");
-    }
+       List <WebPushSubscription> webPushSubscription = new ArrayList<>();
+        webPushSubscription.addAll(subRepository.findByEmail(userEmail));
+           System.out.println("Nessuna Sottoscizione Trovata per l'utente");
+           subRepository.delete(webPushSubscription.iterator().next());
+           System.out.println("Sottoscizione Cancellata");
+       }
 
     @Override
     public Collection<WebPushSubscription> getSubscriptions(String userEmal) {

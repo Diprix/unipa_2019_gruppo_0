@@ -8,6 +8,10 @@ public class SubscriptionDTO {
     private String email;
     private WebPushSubscription webPushSubscription;
 
+    public SubscriptionDTO() {
+
+    }
+
 
     public SubscriptionDTO(String email, WebPushSubscription webPushSubscription) {
         this.email = email;
@@ -23,9 +27,7 @@ public class SubscriptionDTO {
         this.webPushSubscription.setP256dh(subscription.keys.p256dh);
     }
 
-    public SubscriptionDTO() {
 
-    }
 
     public String getEmail() {
         return email;

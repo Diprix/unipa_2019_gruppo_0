@@ -1,5 +1,6 @@
 package it.eng.unipa.filesharing.container;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.eng.unipa.filesharing.context.SecurityContext;
 import it.eng.unipa.filesharing.dto.SubscriptionDTO;
 import it.eng.unipa.filesharing.dto.TeamDTO;
 import it.eng.unipa.filesharing.model.WebPushSubscription;
@@ -36,6 +37,7 @@ public class NotificationController {
 
        //CREO IL SERVIZIO CHE MI GESTISCE LE OPERAZIONI DI SOTTOSCRIZIONE.
     private SubscriptionsRegistryService subscriptionsRegistryService;
+    WebPushSubscription webPushSubscription =new WebPushSubscription();
 
     public NotificationController(@Autowired SubscriptionsRegistryService subscriptionsRegistryService) {
         this.subscriptionsRegistryService = subscriptionsRegistryService;
@@ -47,17 +49,24 @@ public class NotificationController {
 //        return new ResponseEntity<List<SubscriptionDTO>>(this.subscriptionsRegistryService.mySubscription(getEmail()),HttpStatus.OK);
 //    }
     // METODO DI SOTTOSCRIZIONE
+//    @PostMapping("/subscribe")
+//    @ResponseStatus(value = HttpStatus.CREATED)
+//    public void addSubscribe(@RequestBody Subscription  subscription){
+//        subscriptionsRegistryService.addSubscriptions(getEmail(), subscription);
+//        System.out.println("Sottoscrizione registrata per " + getEmail());
+//    }
+
     @PostMapping("/subscribe")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public void addSubscribe(@RequestBody Subscription  subscription){
-        subscriptionsRegistryService.addSubscriptions(getEmail(), subscription);
+    public void addSubscribe(@RequestBody Subscription subscription){
+        subscriptionsRegistryService.addSubscriptions(SecurityContext.getEmail(), subscription);
         System.out.println("Sottoscrizione registrata per " + getEmail());
     }
 
     // METODO DI RIMOZIONE SOTTOSCRIZIONE
     @PostMapping("/unsubscribe")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void removeSubscribe(@RequestBody WebPushSubscription webPushSubscription) {
+    public void removeSubscribe(@RequestBody Subscription subscription) {
         subscriptionsRegistryService.removeSubscriptions(getEmail(), subscription);
          System.out.println(">>** Sottoscrizione cancellata");
     }

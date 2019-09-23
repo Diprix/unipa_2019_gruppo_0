@@ -9,11 +9,10 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.UUID;
 
-public  interface SubRepository extends JpaRepository<WebPushSubscription, String>/*extends MongoRepository<Team, UUID>*/{
+public  interface SubRepository extends JpaRepository<WebPushSubscription, Long>/*extends MongoRepository<Team, UUID>*/{
 
-
-    @Query("select w from Web_Push_Subscription w where w.email=:email")
-    List<WebPushSubscription> mySubscriptions(@Param("email")String email);
+  //  @Query("select '*' from Web_Push_Subscription")
+    List<WebPushSubscription> findByEmail(String email);
 
 
 }

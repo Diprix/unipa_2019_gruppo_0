@@ -8,7 +8,7 @@ public class SubscriptionConvert implements Converter<WebPushSubscription, Subsc
 
     @Override
     public SubscriptionDTO convert(WebPushSubscription webPushSubscription) {
-        SubscriptionDTO subscriptionDTO=null;
+        SubscriptionDTO subscriptionDTO= null;
         subscriptionDTO = new SubscriptionDTO();
         subscriptionDTO.setEmail(webPushSubscription.getEmail());
         subscriptionDTO.getWebPushSubscription().setEndpoint(webPushSubscription.getEndpoint());

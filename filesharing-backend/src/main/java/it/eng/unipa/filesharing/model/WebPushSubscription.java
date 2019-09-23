@@ -20,6 +20,10 @@ public class WebPushSubscription  {
 //    @OneToMany(mappedBy = "webPushSubscription",cascade = CascadeType.ALL,orphanRemoval = true)
 //    private List<Membership> members = new ArrayList<>();
 
+//    @ManyToOne
+//    @MapsId("email")
+//    private Membership membership;
+
     private String email;
     private String auth;
     private String endpoint;
