@@ -5,6 +5,7 @@ import java.util.UUID;
 
 
 import it.eng.unipa.filesharing.model.Membership;
+import it.eng.unipa.filesharing.model.WebPushSubscription;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,9 +20,6 @@ public interface TeamRepository extends JpaRepository<Team, UUID>/*extends Mongo
 	
 	@Query("select t from Team t join t.members m where m.oid.email=:email")
 	List<Team> myTeams(@Param("email")String email);
-////
-//	@Query("select m from membership m, member_subscription ms where m.email= ms.email and m.email=:email")
-//	List<MemberSubscription> mySubscription(@Param("email")String email);
 
 
 }

@@ -11,17 +11,12 @@ import java.util.UUID;
 
 public interface SubscriptionsRegistryService {
 
-    List<SubscriptionDTO> mySubscription();
-
-    List<SubscriptionDTO> mySubscription(String email);
-
-    UUID save(SubscriptionDTO webPushSubscription);
-    SubscriptionDTO get(UUID uuid);
+   List<WebPushSubscription> mySubscriptions();
 
     //RICEVE L'OGGETTO Subscription DAL PUSH SERVICE E LO FORMATTA CON L'EMAIL IN UN DTO
     WebPushSubscription addSubscriptions(String userEmail, Subscription subscription);
 
-    SubscriptionDTO removeSubscriptions(String userEmail, Subscription subscription);
+    void removeSubscriptions(String userEmail, Subscription subscription);
 
     Collection<WebPushSubscription> getSubscriptions(String userEmal);
 

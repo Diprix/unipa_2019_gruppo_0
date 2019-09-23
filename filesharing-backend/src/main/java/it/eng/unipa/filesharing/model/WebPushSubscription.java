@@ -6,19 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(
-        uniqueConstraints=
-        @UniqueConstraint(columnNames={"id", "email"})
-)
-public class WebPushSubscription implements Serializable {
+//@Table(
+//        uniqueConstraints=
+//        @UniqueConstraint(columnNames={"id", "email"})
+//)
+public class WebPushSubscription  {
 
     @Id
     @SequenceGenerator(name="webPushSubscription_seq", initialValue=1, allocationSize=1)
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="webPushSubscription_seq")
     private Long id;
 
-    @OneToMany(mappedBy = "webPushSubscription",cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<Membership> members = new ArrayList<>();
+//    @OneToMany(mappedBy = "webPushSubscription",cascade = CascadeType.ALL,orphanRemoval = true)
+//    private List<Membership> members = new ArrayList<>();
 
     private String email;
     private String auth;
@@ -66,5 +66,14 @@ public class WebPushSubscription implements Serializable {
         this.endpoint = endpoint;
     }
 
-
+    @Override
+    public String toString() {
+        return "WebPushSubscription{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", auth='" + auth + '\'' +
+                ", endpoint='" + endpoint + '\'' +
+                ", p256dh='" + p256dh + '\'' +
+                '}';
+    }
 }

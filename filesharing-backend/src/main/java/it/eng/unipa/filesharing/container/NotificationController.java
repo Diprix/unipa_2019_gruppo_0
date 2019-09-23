@@ -26,32 +26,28 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static it.eng.unipa.filesharing.context.SecurityContext.getEmail;
 
 @RestController
-@RequestMapping("/notification")
 public class NotificationController {
     private static final String PUBLIC_KEY = "BAPGG2IY3Vn48d_H8QNuVLRErkBI0L7oDOOCAMUBqYMTMTzukaIAuB5OOcmkdeRICcyQocEwD-oxVc81YXXZPRY";
     private static final String PRIVATE_KEY = "A7xDGuxMZ4ufflcAhBW23xpoWZNOLwM4Rw2wXjP0y6M";
     private static final String SUBJECT = "Foobarbaz";
     private static final String PAYLOAD = "My fancy message";
     private static PushService pushService = new PushService();
-    private TeamService teamService;
-    private Subscription subscription;
+    private Subscription subscription= new Subscription();
 
        //CREO IL SERVIZIO CHE MI GESTISCE LE OPERAZIONI DI SOTTOSCRIZIONE.
     private SubscriptionsRegistryService subscriptionsRegistryService;
 
     public NotificationController(@Autowired SubscriptionsRegistryService subscriptionsRegistryService) {
-
-        this.teamService = teamService;
         this.subscriptionsRegistryService = subscriptionsRegistryService;
     }
 
 
-    @GetMapping("")
-    public ResponseEntity<List<SubscriptionDTO>> mySubscription(){
-        return new ResponseEntity<List<SubscriptionDTO>>(this.subscriptionsRegistryService.mySubscription(getEmail()),HttpStatus.OK);
-    }
+//    @GetMapping("")
+//    public ResponseEntity<List<SubscriptionDTO>> mySubscription(){
+//        return new ResponseEntity<List<SubscriptionDTO>>(this.subscriptionsRegistryService.mySubscription(getEmail()),HttpStatus.OK);
+//    }
     // METODO DI SOTTOSCRIZIONE
-    @PostMapping("/notification/subscribe")
+    @PostMapping("/subscribe")
     @ResponseStatus(value = HttpStatus.CREATED)
     public void addSubscribe(@RequestBody Subscription  subscription){
         subscriptionsRegistryService.addSubscriptions(getEmail(), subscription);
@@ -59,7 +55,7 @@ public class NotificationController {
     }
 
     // METODO DI RIMOZIONE SOTTOSCRIZIONE
-    @PostMapping("/notification/unsubscribe")
+    @PostMapping("/unsubscribe")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void removeSubscribe(@RequestBody WebPushSubscription webPushSubscription) {
         subscriptionsRegistryService.removeSubscriptions(getEmail(), subscription);

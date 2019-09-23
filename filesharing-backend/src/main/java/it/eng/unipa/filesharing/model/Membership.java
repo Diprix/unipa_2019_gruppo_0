@@ -18,10 +18,10 @@ public class Membership {
 	@ManyToOne
 	private Bucket bucket;
 
-	@ManyToOne
-	@MapsId("email")
-	@JoinColumn(name = "email")
-	private WebPushSubscription webPushSubscription;
+//	@ManyToOne
+//	@MapsId("email")
+//	@JoinColumn(name = "email")
+//	private WebPushSubscription webPushSubscription;
 
 
 	

@@ -10,7 +10,6 @@ import it.eng.unipa.filesharing.model.WebPushSubscription;
 public interface TeamService {
 	
 	List<TeamDTO> myTeams();
-	//List<TeamDTO> mySubscription();
 
 	UUID save(TeamDTO team);
 	
@@ -29,8 +28,6 @@ public interface TeamService {
 	void removeMember(UUID uuid, String otherEmail);
 	
 	void addBucket(UUID uuid,BucketDTO bucketDTO);
-
-	SubscriptionDTO addSubscription(String mail, SubscriptionDTO subscriptionDTO);
 	
 	void removeBucket(UUID uuid, String bucketName);
 
@@ -40,16 +37,9 @@ public interface TeamService {
 
 	ResourceDTO addContent(UUID uuid, String bucketName, String parentUniqueId, String name, byte[] content);
 
-	ResourceDTO addSubscription(UUID uuid, String bucketName, String parentUniqueId, String name, byte[] content);
-
 	ResourceDTO addFolder(UUID uuid, String bucketName, String parentUniqueId, String name);
 
 	ResourceDTO getContent(UUID uuid, String bucketName, String uniqueId);
 
-	public void saveSubscription(String userEmail, WebPushSubscription subscription);
-	public void deleteSubscription(String userEmail, WebPushSubscription subscription);
-
-	public Collection<WebPushSubscription> getSubscriptions(String userEmal);
-	
 	
 }

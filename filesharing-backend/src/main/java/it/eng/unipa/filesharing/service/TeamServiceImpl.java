@@ -37,14 +37,11 @@ import it.eng.unipa.filesharing.service.exception.TeamNotFoundException;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
-public class TeamServiceImpl implements TeamService{
+public class TeamServiceImpl implements TeamService {
 
-//	@Autowired
-//	private SubscriptionsRegistryService subscriptionsRegistry;
 
 	@Autowired
 	private ObjectMapper objectMapper;
-
 
 
 	private TeamRepository teamRepository;
@@ -53,7 +50,7 @@ public class TeamServiceImpl implements TeamService{
 
 	private List<BucketType> allBucketType;
 
-	public TeamServiceImpl(/*@Autowired ResourceRepository resourceRepository,*/@Autowired TeamRepository teamRepository,@Autowired ConversionService conversionService,@Autowired List<BucketType> allBucketType) {
+	public TeamServiceImpl(/*@Autowired ResourceRepository resourceRepository,*/@Autowired TeamRepository teamRepository, @Autowired ConversionService conversionService, @Autowired List<BucketType> allBucketType) {
 		this.teamRepository = teamRepository;
 		this.conversionService = conversionService;
 		this.allBucketType = allBucketType;
@@ -69,7 +66,7 @@ public class TeamServiceImpl implements TeamService{
 
 	@Override
 	public List<TeamDTO> myTeams() {
-		return teamRepository.myTeams(SecurityContext.getEmail()).stream().map((t)->{
+		return teamRepository.myTeams(SecurityContext.getEmail()).stream().map((t) -> {
 			return conversionService.convert(t, TeamDTO.class);
 		}).collect(Collectors.toList());
 	}
@@ -78,13 +75,13 @@ public class TeamServiceImpl implements TeamService{
 	@Override
 	public UUID save(TeamDTO teamDTO) {
 		Team team = null;
-		if(teamDTO.getUuid()!=null) {
+		if (teamDTO.getUuid() != null) {
 			team = team(teamDTO.getUuid());
 			team.setName(teamDTO.getName());
 			team.setDescription(teamDTO.getDescription());
-		}else {
+		} else {
 			team = new Team(SecurityContext.getEmail(), teamDTO.getName(), teamDTO.getDescription());
-			for(UserRoleDTO x: teamDTO.getMembers()) {
+			for (UserRoleDTO x : teamDTO.getMembers()) {
 				team.inviteMember(SecurityContext.getEmail(), x.getEmail(), x.isAdmin());
 			}
 		}
@@ -99,7 +96,7 @@ public class TeamServiceImpl implements TeamService{
 	}
 
 	@Override
-	public void inviteMember(UUID uuid, String otherEmail,boolean admin) {
+	public void inviteMember(UUID uuid, String otherEmail, boolean admin) {
 		Team team = team(uuid);
 		team.inviteMember(SecurityContext.getEmail(), otherEmail, admin);
 	}
@@ -107,8 +104,8 @@ public class TeamServiceImpl implements TeamService{
 	@Override
 	public void acceptInvite(UUID uuid) {
 		Team team = team(uuid);
-		boolean esito = team.acceptInvite(SecurityContext.getEmail(),SecurityContext.getLongName());
-		team.getBuckets().forEach(x-> x.addMembership(SecurityContext.getEmail(), true, true));
+		boolean esito = team.acceptInvite(SecurityContext.getEmail(), SecurityContext.getLongName());
+		team.getBuckets().forEach(x -> x.addMembership(SecurityContext.getEmail(), true, true));
 		teamRepository.save(team);
 	}
 
@@ -121,36 +118,31 @@ public class TeamServiceImpl implements TeamService{
 	@Override
 	public void removeMember(UUID uuid, String otherEmail) {
 		Optional<Team> findById = teamRepository.findById(uuid);
-		if(findById.isPresent() ){
+		if (findById.isPresent()) {
 			Team team = findById.get();
 			boolean esito = team.removeMember(SecurityContext.getEmail(), otherEmail);
 		}
 	}
 
 	@Override
-	public void addBucket(UUID uuid,BucketDTO bucketDTO) {
+	public void addBucket(UUID uuid, BucketDTO bucketDTO) {
 		Optional<Team> findById = teamRepository.findById(uuid);
-		if(findById.isPresent() ){
+		if (findById.isPresent()) {
 			Team team = findById.get();
 
 			BucketType bucketType = contains(bucketDTO.getBucketType());
 
-			boolean esito = team.addBucket(bucketType,SecurityContext.getEmail(), bucketDTO.getName(),bucketDTO.getDescription());
+			boolean esito = team.addBucket(bucketType, SecurityContext.getEmail(), bucketDTO.getName(), bucketDTO.getDescription());
 
 		}
 
-	}
-
-	@Override
-	public SubscriptionDTO addSubscription(String mail, SubscriptionDTO subscriptionDTO) {
-		return null;
 	}
 
 
 	@Override
 	public void removeBucket(UUID uuid, String name) {
 		Optional<Team> findById = teamRepository.findById(uuid);
-		if(findById.isPresent() ){
+		if (findById.isPresent()) {
 			Team team = findById.get();
 			boolean esito = team.removeBucket(SecurityContext.getEmail(), name);
 		}
@@ -158,19 +150,19 @@ public class TeamServiceImpl implements TeamService{
 	}
 
 	@Override
-	public List<BucketTypeDTO> bucketTypeSupport(){
-		return this.allBucketType.stream().map((bt)->new BucketTypeDTO(bt.getName(),bt.getDescription())).collect(Collectors.toList());
+	public List<BucketTypeDTO> bucketTypeSupport() {
+		return this.allBucketType.stream().map((bt) -> new BucketTypeDTO(bt.getName(), bt.getDescription())).collect(Collectors.toList());
 	}
 
 	private BucketType contains(String bucketTypeName) {
-		return this.allBucketType.stream().filter((b)->b.getName().equals(bucketTypeName)).findFirst().orElseGet(null);
+		return this.allBucketType.stream().filter((b) -> b.getName().equals(bucketTypeName)).findFirst().orElseGet(null);
 	}
 
 	@Override
 	public ResourceDTO tree(UUID uuid, String bucketName) {
 		Team team = team(uuid);
 		Bucket bucket = team.bucket(bucketName);
-		return (ResourceDTO)conversionService.convert(bucket.getBucketResource(),TypeDescriptor.valueOf(BucketResource.class), TypeDescriptor.valueOf(ResourceDTO.class));
+		return (ResourceDTO) conversionService.convert(bucket.getBucketResource(), TypeDescriptor.valueOf(BucketResource.class), TypeDescriptor.valueOf(ResourceDTO.class));
 	}
 
 	private Team team(UUID uuid) {
@@ -185,81 +177,15 @@ public class TeamServiceImpl implements TeamService{
 	}
 
 	@Override
-	public ResourceDTO addContent(UUID uuid, String bucketName,String parentUniqueId,String name, byte[] content) {
+	public ResourceDTO addContent(UUID uuid, String bucketName, String parentUniqueId, String name, byte[] content) {
 		Team team = team(uuid);
 		ContentResource contentResource = team.addContent(bucketName, parentUniqueId, SecurityContext.getEmail(), name, content);
-
-//		//TODO: spostare in opportuno service con gestione eventi di notifica
-//		PushService pushService = new PushService();
-//
-//			try {
-//				pushService.setPublicKey("BBYCxwATP2vVgw7mMPHJfT6bZrJP2iUV7OP_oxHzEcNFenrX66D8G34CdEmVULNg4WJXfjkeyT0AT9LwavpN8M4=");
-//				pushService.setPrivateKey("AKYLHgp-aV3kOys9Oy6QgxNI6OGIlOB3G6kjGvhl57j_");
-//
-//			} catch (NoSuchAlgorithmException e) {
-//				e.printStackTrace();
-//			} catch (NoSuchProviderException e) {
-//				e.printStackTrace();
-//			} catch (InvalidKeySpecException e) {
-//				e.printStackTrace();
-//			}
-//
-//		WebPushMessage message = new WebPushMessage();
-//			message.title = "Nuovo File";
-//			message.message = "Aggiunto il file " + name + " da utente " + SecurityContext.getEmail();
-//
-//
-//		List<UserRole> members = team.getMembers();
-//		for (UserRole member: members) {
-//
-//			Collection<WebPushSubscription> subscriptions = subscriptionsRegistry.getSubscriptions(member.getOid().getEmail());
-//
-//		//	for (WebPushSubscription subscription: subscriptions) {
-//
-//				Notification notification = null;
-////				try {
-////					notification = new Notification(
-////							subscription.getEndpoint(),
-////							subscription.getKeys().getP256dh(),
-////							subscription.getKeys().getAuth(),
-////							objectMapper.writeValueAsBytes(message));
-////				} catch (NoSuchAlgorithmException e) {
-////					e.printStackTrace();
-////				} catch (NoSuchProviderException e) {
-////					e.printStackTrace();
-////				} catch (InvalidKeySpecException e) {
-////					e.printStackTrace();
-////				} catch (JsonProcessingException e) {
-////					e.printStackTrace();
-////				}
-////
-////				try {
-////					pushService.send(notification);
-////				} catch (GeneralSecurityException e) {
-////					e.printStackTrace();
-////				} catch (IOException e) {
-////					e.printStackTrace();
-////				} catch (JoseException e) {
-////					e.printStackTrace();
-////				} catch (ExecutionException e) {
-////					e.printStackTrace();
-////				} catch (InterruptedException e) {
-////					e.printStackTrace();
-////				}
-////			}
-////
-		//}
-
 		return conversionService.convert(contentResource, ResourceDTO.class);
 	}
 
-	@Override
-	public ResourceDTO addSubscription(UUID uuid, String bucketName, String parentUniqueId, String name, byte[] content) {
-		return null;
-	}
 
 	@Override
-	public ResourceDTO addFolder(UUID uuid, String bucketName,String parentUniqueId,String name) {
+	public ResourceDTO addFolder(UUID uuid, String bucketName, String parentUniqueId, String name) {
 		Team team = team(uuid);
 		FolderResource folderResource = team.addFolder(bucketName, parentUniqueId, SecurityContext.getEmail(), name);
 		return conversionService.convert(folderResource, ResourceDTO.class);
@@ -269,24 +195,7 @@ public class TeamServiceImpl implements TeamService{
 	public ResourceDTO getContent(UUID uuid, String bucketName, String uniqueId) {
 
 		Team team = team(uuid);
-		ContentResource contentResource = team.getContent(SecurityContext.getEmail(),bucketName,uniqueId);
-		return (ResourceDTO)conversionService.convert(contentResource,TypeDescriptor.valueOf(ContentResource.class), TypeDescriptor.valueOf(ResourceDTO.class));
+		ContentResource contentResource = team.getContent(SecurityContext.getEmail(), bucketName, uniqueId);
+		return (ResourceDTO) conversionService.convert(contentResource, TypeDescriptor.valueOf(ContentResource.class), TypeDescriptor.valueOf(ResourceDTO.class));
 	}
-
-	// IMPLEMETS METODS FOR SUBSCRIPTION TE@MLEADER
-	@Override
-	public void saveSubscription(String userEmail, WebPushSubscription subscription) {
-
-	}
-
-	@Override
-	public void deleteSubscription(String userEmail, WebPushSubscription subscription) {
-
-	}
-
-	@Override
-	public Collection<WebPushSubscription> getSubscriptions(String userEmal) {
-		return null;
-	}
-
 }

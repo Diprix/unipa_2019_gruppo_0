@@ -1,5 +1,6 @@
 package it.eng.unipa.filesharing.service;
 
+import it.eng.unipa.filesharing.context.SecurityContext;
 import it.eng.unipa.filesharing.dto.SubscriptionDTO;
 import it.eng.unipa.filesharing.model.WebPushSubscription;
 import it.eng.unipa.filesharing.repository.SubRepository;
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -19,52 +21,40 @@ public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
 
     @Autowired SubscriptionsRegistryService subscriptionsRegistryService;
     @Autowired ConversionService conversionService;
-    //@Autowired SubRepository subRepository;
-   // @Autowired
-    TeamRepository teamRepository;
+    @Autowired SubRepository subRepository;
 
 
-    public SubscriptionRegistryImpl(@Autowired TeamRepository teamRepository, @Autowired ConversionService conversionService) {
-        //this.subRepository = subRepository;
-        this.teamRepository =teamRepository;
+
+    public SubscriptionRegistryImpl(@Autowired SubRepository subRepository, @Autowired ConversionService conversionService) {
+        this.subRepository = subRepository;
+        //this.teamRepository =teamRepository;
         this.conversionService = conversionService;
 
     }
 
+    // Collection<WebPushSubscription> subscriptions = subscriptionsRegistryService.getSubscriptions(member.getOid().getEmail());
     @Override
-    public List<SubscriptionDTO> mySubscription() {
-        return null;
-    }
-
-    @Override
-    public List<SubscriptionDTO> mySubscription(String email) {
-        return null;
-    }
-
-
-    @Override
-    public SubscriptionDTO get(UUID uuid) {
+    public List<WebPushSubscription> mySubscriptions() {
         return null;
     }
 
     @Override
     public WebPushSubscription addSubscriptions(String userEmail, Subscription subscription) {
-        WebPushSubscription webPushSubscription= null;
-        webPushSubscription.setEmail(userEmail);
-        webPushSubscription.setEndpoint(subscription.endpoint);
-        webPushSubscription.setAuth(subscription.keys.auth);
-        webPushSubscription.setP256dh(subscription.keys.p256dh);
+        WebPushSubscription webPushSubscription = new WebPushSubscription(userEmail, subscription.keys.auth, subscription.endpoint, subscription.keys.p256dh);
+        System.out.println(webPushSubscription.toString());
         return webPushSubscription;
     }
 
+
     @Override
-    public SubscriptionDTO removeSubscriptions(String userEmail, Subscription subscription) {
-        WebPushSubscription webPushSubscription= null;
-        webPushSubscription.setEmail(userEmail);
-        webPushSubscription.setEndpoint(subscription.endpoint);
-        webPushSubscription.setAuth(subscription.keys.auth);
-        webPushSubscription.setP256dh(subscription.keys.p256dh);
-        return conversionService.convert(webPushSubscription, SubscriptionDTO.class);
+    public void removeSubscriptions(String userEmail, Subscription subscription) {
+//        WebPushSubscription webPushSubscription= null;
+//        webPushSubscription.setEmail(userEmail);
+//        webPushSubscription.setEndpoint(subscription.endpoint);
+//        webPushSubscription.setAuth(subscription.keys.auth);
+//        webPushSubscription.setP256dh(subscription.keys.p256dh);
+//        return conversionService.convert(webPushSubscription, SubscriptionDTO.class);
+        System.out.println("Cordiali Saluti");
     }
 
     @Override
@@ -72,13 +62,6 @@ public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
         return null;
     }
 
-    @Override
-    public UUID save(SubscriptionDTO subscriptionDTO) {
-        WebPushSubscription webPushSubscription = null;
-        webPushSubscription.setEmail(subscriptionDTO.getEmail());
 
-
-        return null;
-    }
 
 }
