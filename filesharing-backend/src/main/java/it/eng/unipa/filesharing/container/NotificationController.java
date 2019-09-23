@@ -26,7 +26,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import static it.eng.unipa.filesharing.context.SecurityContext.getEmail;
 
 @RestController
-@RequestMapping("/notification")
 public class NotificationController {
     private static final String PUBLIC_KEY = "BAPGG2IY3Vn48d_H8QNuVLRErkBI0L7oDOOCAMUBqYMTMTzukaIAuB5OOcmkdeRICcyQocEwD-oxVc81YXXZPRY";
     private static final String PRIVATE_KEY = "A7xDGuxMZ4ufflcAhBW23xpoWZNOLwM4Rw2wXjP0y6M";
@@ -45,11 +44,12 @@ public class NotificationController {
         this.subscriptionsRegistryService = subscriptionsRegistryService;
     }
 
-
-    @GetMapping("")
+    @GetMapping("/notification")
     public ResponseEntity<List<SubscriptionDTO>> mySubscription(){
+        System.out.println("******SONO QUI******");
         return new ResponseEntity<List<SubscriptionDTO>>(this.subscriptionsRegistryService.mySubscription(getEmail()),HttpStatus.OK);
     }
+
     // METODO DI SOTTOSCRIZIONE
     @PostMapping("/notification/subscribe")
     @ResponseStatus(value = HttpStatus.CREATED)

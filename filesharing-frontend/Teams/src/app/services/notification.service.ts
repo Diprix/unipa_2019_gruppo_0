@@ -20,8 +20,4 @@ export class NotificationService {
     return this.http.post('/api/notification/unsubscribe', sub);
   }
 
-  send() {
-    return this.http.post('/api/notification/newsletter', null);
-  }
-
 }

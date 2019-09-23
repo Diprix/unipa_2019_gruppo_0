@@ -17,6 +17,8 @@ import java.util.*;
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
 
+    WebPushSubscription webPushSubscription;
+
     @Autowired SubscriptionsRegistryService subscriptionsRegistryService;
     @Autowired ConversionService conversionService;
     //@Autowired SubRepository subRepository;
@@ -49,7 +51,8 @@ public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
 
     @Override
     public WebPushSubscription addSubscriptions(String userEmail, Subscription subscription) {
-        WebPushSubscription webPushSubscription= null;
+        System.out.println(userEmail + " " + subscription);
+        //WebPushSubscription webPushSubscription= null;
         webPushSubscription.setEmail(userEmail);
         webPushSubscription.setEndpoint(subscription.endpoint);
         webPushSubscription.setAuth(subscription.keys.auth);
@@ -59,7 +62,7 @@ public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
 
     @Override
     public SubscriptionDTO removeSubscriptions(String userEmail, Subscription subscription) {
-        WebPushSubscription webPushSubscription= null;
+
         webPushSubscription.setEmail(userEmail);
         webPushSubscription.setEndpoint(subscription.endpoint);
         webPushSubscription.setAuth(subscription.keys.auth);
@@ -74,7 +77,6 @@ public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
 
     @Override
     public UUID save(SubscriptionDTO subscriptionDTO) {
-        WebPushSubscription webPushSubscription = null;
         webPushSubscription.setEmail(subscriptionDTO.getEmail());
 
 
