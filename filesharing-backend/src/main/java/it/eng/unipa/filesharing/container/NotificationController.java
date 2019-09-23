@@ -23,19 +23,14 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
 import static it.eng.unipa.filesharing.context.SecurityContext.getEmail;
 
 @RestController
 public class NotificationController {
     private static final String PUBLIC_KEY = "BAPGG2IY3Vn48d_H8QNuVLRErkBI0L7oDOOCAMUBqYMTMTzukaIAuB5OOcmkdeRICcyQocEwD-oxVc81YXXZPRY";
     private static final String PRIVATE_KEY = "A7xDGuxMZ4ufflcAhBW23xpoWZNOLwM4Rw2wXjP0y6M";
-    private static final String SUBJECT = "Foobarbaz";
-    private static final String PAYLOAD = "My fancy message";
     private static PushService pushService = new PushService();
     private Subscription subscription= new Subscription();
-
-       //CREO IL SERVIZIO CHE MI GESTISCE LE OPERAZIONI DI SOTTOSCRIZIONE.
     private SubscriptionsRegistryService subscriptionsRegistryService;
     WebPushSubscription webPushSubscription =new WebPushSubscription();
 
@@ -43,19 +38,7 @@ public class NotificationController {
         this.subscriptionsRegistryService = subscriptionsRegistryService;
     }
 
-
-//    @GetMapping("")
-//    public ResponseEntity<List<SubscriptionDTO>> mySubscription(){
-//        return new ResponseEntity<List<SubscriptionDTO>>(this.subscriptionsRegistryService.mySubscription(getEmail()),HttpStatus.OK);
-//    }
-    // METODO DI SOTTOSCRIZIONE
-//    @PostMapping("/subscribe")
-//    @ResponseStatus(value = HttpStatus.CREATED)
-//    public void addSubscribe(@RequestBody Subscription  subscription){
-//        subscriptionsRegistryService.addSubscriptions(getEmail(), subscription);
-//        System.out.println("Sottoscrizione registrata per " + getEmail());
-//    }
-
+    // METODO DI REGISTRAZIONE SOTTOSCRIZIONE
     @PostMapping("/subscribe")
     @ResponseStatus(value = HttpStatus.CREATED)
     public void addSubscribe(@RequestBody Subscription subscription){

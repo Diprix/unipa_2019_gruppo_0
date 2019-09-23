@@ -1,18 +1,32 @@
 package it.eng.unipa.filesharing.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.eng.unipa.filesharing.context.SecurityContext;
 import it.eng.unipa.filesharing.dto.SubscriptionDTO;
 import it.eng.unipa.filesharing.model.Team;
+import it.eng.unipa.filesharing.model.UserRole;
+import it.eng.unipa.filesharing.model.WebPushMessage;
 import it.eng.unipa.filesharing.model.WebPushSubscription;
 import it.eng.unipa.filesharing.repository.SubRepository;
+import nl.martijndwars.webpush.Notification;
+import nl.martijndwars.webpush.PushService;
 import nl.martijndwars.webpush.Subscription;
+import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,6 +36,8 @@ public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
     @Autowired SubscriptionsRegistryService subscriptionsRegistryService;
     @Autowired ConversionService conversionService;
     @Autowired SubRepository subRepository;
+    @Autowired
+    private ObjectMapper objectMapper;
 
 
 
@@ -66,10 +82,64 @@ public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
        }
 
     @Override
-    public Collection<WebPushSubscription> getSubscriptions(String userEmal) {
-        return null;
-    }
+    public void getSubscriptions(String userEmail, String name, List<UserRole> members) {
+        PushService pushService = new PushService();
+        List <WebPushSubscription> webPushSubscriptions = new ArrayList<>();
+        webPushSubscriptions.addAll(subRepository.findByEmail("davide_ag@hotmail.it"));
 
+        try {
+            pushService.setPublicKey("BBYCxwATP2vVgw7mMPHJfT6bZrJP2iUV7OP_oxHzEcNFenrX66D8G34CdEmVULNg4WJXfjkeyT0AT9LwavpN8M4=");
+            pushService.setPrivateKey("AKYLHgp-aV3kOys9Oy6QgxNI6OGIlOB3G6kjGvhl57j_");
 
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchProviderException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        }
 
+        WebPushMessage message = new WebPushMessage();
+        message.title = "Nuovo File";
+        message.message = "Aggiunto il file " + name + " da utente " + SecurityContext.getEmail();
+
+       // for (UserRole member: members) {
+            for (int i = 0; i < webPushSubscriptions.size(); i++) {
+                WebPushSubscription webPushSubscription = webPushSubscriptions.get(i);
+                System.out.println(webPushSubscription.getEmail() + webPushSubscription.getEndpoint()+"");
+
+                Notification notification = null;
+                try {
+                    notification = new Notification(
+                            webPushSubscription.getEndpoint(),
+                            webPushSubscription.getP256dh(),
+                            webPushSubscription.getAuth(),
+                            objectMapper.writeValueAsBytes(message));
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                } catch (NoSuchProviderException e) {
+                    e.printStackTrace();
+                } catch (InvalidKeySpecException e) {
+                    e.printStackTrace();
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    pushService.send(notification);
+                } catch (GeneralSecurityException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JoseException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    //}
 }

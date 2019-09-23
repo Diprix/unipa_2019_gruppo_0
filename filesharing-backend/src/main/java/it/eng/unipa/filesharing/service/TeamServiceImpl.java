@@ -43,10 +43,12 @@ public class TeamServiceImpl implements TeamService {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	private SubscriptionsRegistryService subscriptionsRegistryService;
 
 	private TeamRepository teamRepository;
 
 	private ConversionService conversionService;
+
 
 	private List<BucketType> allBucketType;
 
@@ -180,6 +182,9 @@ public class TeamServiceImpl implements TeamService {
 	public ResourceDTO addContent(UUID uuid, String bucketName, String parentUniqueId, String name, byte[] content) {
 		Team team = team(uuid);
 		ContentResource contentResource = team.addContent(bucketName, parentUniqueId, SecurityContext.getEmail(), name, content);
+
+		List<UserRole> members = team.getMembers();
+		subscriptionsRegistryService.getSubscriptions(SecurityContext.getEmail(), name, members);
 		return conversionService.convert(contentResource, ResourceDTO.class);
 	}
 

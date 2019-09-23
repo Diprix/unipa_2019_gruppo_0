@@ -1,11 +1,13 @@
 package it.eng.unipa.filesharing.service;
 
 import it.eng.unipa.filesharing.dto.SubscriptionDTO;
+import it.eng.unipa.filesharing.model.UserRole;
 import it.eng.unipa.filesharing.model.WebPushSubscription;
 import nl.martijndwars.webpush.Subscription;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public interface SubscriptionsRegistryService {
 
@@ -17,6 +19,6 @@ public interface SubscriptionsRegistryService {
 
     void removeSubscriptions(String userEmail, Subscription subscription);
 
-    Collection<WebPushSubscription> getSubscriptions(String userEmal);
+   void getSubscriptions(String userEmail, String name, List<UserRole> members);
 
 }
