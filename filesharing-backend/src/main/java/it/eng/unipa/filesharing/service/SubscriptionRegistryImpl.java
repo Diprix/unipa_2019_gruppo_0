@@ -3,6 +3,7 @@ package it.eng.unipa.filesharing.service;
 import it.eng.unipa.filesharing.dto.SubscriptionDTO;
 import it.eng.unipa.filesharing.model.WebPushSubscription;
 import it.eng.unipa.filesharing.repository.SubRepository;
+import it.eng.unipa.filesharing.repository.TeamRepository;
 import nl.martijndwars.webpush.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -18,11 +19,14 @@ public class SubscriptionRegistryImpl implements SubscriptionsRegistryService {
 
     @Autowired SubscriptionsRegistryService subscriptionsRegistryService;
     @Autowired ConversionService conversionService;
-    @Autowired SubRepository subRepository;
+    //@Autowired SubRepository subRepository;
+   // @Autowired
+    TeamRepository teamRepository;
 
 
-    public SubscriptionRegistryImpl(@Autowired SubRepository subRepository, @Autowired ConversionService conversionService, @Autowired SubscriptionsRegistryService subscriptionsRegistryService) {
-        this.subRepository = subRepository;
+    public SubscriptionRegistryImpl(@Autowired TeamRepository teamRepository, @Autowired ConversionService conversionService, @Autowired SubscriptionsRegistryService subscriptionsRegistryService) {
+        //this.subRepository = subRepository;
+        this.teamRepository =teamRepository;
         this.conversionService = conversionService;
         this.subscriptionsRegistryService = subscriptionsRegistryService;
 

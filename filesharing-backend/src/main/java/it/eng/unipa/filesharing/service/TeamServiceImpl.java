@@ -39,8 +39,8 @@ import it.eng.unipa.filesharing.service.exception.TeamNotFoundException;
 @Transactional(propagation = Propagation.REQUIRES_NEW)
 public class TeamServiceImpl implements TeamService{
 
-	@Autowired
-	private SubscriptionsRegistryService subscriptionsRegistry;
+//	@Autowired
+//	private SubscriptionsRegistryService subscriptionsRegistry;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -189,66 +189,66 @@ public class TeamServiceImpl implements TeamService{
 		Team team = team(uuid);
 		ContentResource contentResource = team.addContent(bucketName, parentUniqueId, SecurityContext.getEmail(), name, content);
 
-		//TODO: spostare in opportuno service con gestione eventi di notifica
-		PushService pushService = new PushService();
-
-			try {
-				pushService.setPublicKey("BBYCxwATP2vVgw7mMPHJfT6bZrJP2iUV7OP_oxHzEcNFenrX66D8G34CdEmVULNg4WJXfjkeyT0AT9LwavpN8M4=");
-				pushService.setPrivateKey("AKYLHgp-aV3kOys9Oy6QgxNI6OGIlOB3G6kjGvhl57j_");
-
-			} catch (NoSuchAlgorithmException e) {
-				e.printStackTrace();
-			} catch (NoSuchProviderException e) {
-				e.printStackTrace();
-			} catch (InvalidKeySpecException e) {
-				e.printStackTrace();
-			}
-
-		WebPushMessage message = new WebPushMessage();
-			message.title = "Nuovo File";
-			message.message = "Aggiunto il file " + name + " da utente " + SecurityContext.getEmail();
-
-
-		List<UserRole> members = team.getMembers();
-		for (UserRole member: members) {
-
-			Collection<WebPushSubscription> subscriptions = subscriptionsRegistry.getSubscriptions(member.getOid().getEmail());
-
-		//	for (WebPushSubscription subscription: subscriptions) {
-
-				Notification notification = null;
-//				try {
-//					notification = new Notification(
-//							subscription.getEndpoint(),
-//							subscription.getKeys().getP256dh(),
-//							subscription.getKeys().getAuth(),
-//							objectMapper.writeValueAsBytes(message));
-//				} catch (NoSuchAlgorithmException e) {
-//					e.printStackTrace();
-//				} catch (NoSuchProviderException e) {
-//					e.printStackTrace();
-//				} catch (InvalidKeySpecException e) {
-//					e.printStackTrace();
-//				} catch (JsonProcessingException e) {
-//					e.printStackTrace();
-//				}
+//		//TODO: spostare in opportuno service con gestione eventi di notifica
+//		PushService pushService = new PushService();
 //
-//				try {
-//					pushService.send(notification);
-//				} catch (GeneralSecurityException e) {
-//					e.printStackTrace();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				} catch (JoseException e) {
-//					e.printStackTrace();
-//				} catch (ExecutionException e) {
-//					e.printStackTrace();
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
+//			try {
+//				pushService.setPublicKey("BBYCxwATP2vVgw7mMPHJfT6bZrJP2iUV7OP_oxHzEcNFenrX66D8G34CdEmVULNg4WJXfjkeyT0AT9LwavpN8M4=");
+//				pushService.setPrivateKey("AKYLHgp-aV3kOys9Oy6QgxNI6OGIlOB3G6kjGvhl57j_");
+//
+//			} catch (NoSuchAlgorithmException e) {
+//				e.printStackTrace();
+//			} catch (NoSuchProviderException e) {
+//				e.printStackTrace();
+//			} catch (InvalidKeySpecException e) {
+//				e.printStackTrace();
 //			}
 //
-		}
+//		WebPushMessage message = new WebPushMessage();
+//			message.title = "Nuovo File";
+//			message.message = "Aggiunto il file " + name + " da utente " + SecurityContext.getEmail();
+//
+//
+//		List<UserRole> members = team.getMembers();
+//		for (UserRole member: members) {
+//
+//			Collection<WebPushSubscription> subscriptions = subscriptionsRegistry.getSubscriptions(member.getOid().getEmail());
+//
+//		//	for (WebPushSubscription subscription: subscriptions) {
+//
+//				Notification notification = null;
+////				try {
+////					notification = new Notification(
+////							subscription.getEndpoint(),
+////							subscription.getKeys().getP256dh(),
+////							subscription.getKeys().getAuth(),
+////							objectMapper.writeValueAsBytes(message));
+////				} catch (NoSuchAlgorithmException e) {
+////					e.printStackTrace();
+////				} catch (NoSuchProviderException e) {
+////					e.printStackTrace();
+////				} catch (InvalidKeySpecException e) {
+////					e.printStackTrace();
+////				} catch (JsonProcessingException e) {
+////					e.printStackTrace();
+////				}
+////
+////				try {
+////					pushService.send(notification);
+////				} catch (GeneralSecurityException e) {
+////					e.printStackTrace();
+////				} catch (IOException e) {
+////					e.printStackTrace();
+////				} catch (JoseException e) {
+////					e.printStackTrace();
+////				} catch (ExecutionException e) {
+////					e.printStackTrace();
+////				} catch (InterruptedException e) {
+////					e.printStackTrace();
+////				}
+////			}
+////
+		//}
 
 		return conversionService.convert(contentResource, ResourceDTO.class);
 	}

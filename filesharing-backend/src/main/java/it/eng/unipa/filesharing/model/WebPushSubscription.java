@@ -1,6 +1,7 @@
 package it.eng.unipa.filesharing.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,19 +10,23 @@ import java.util.List;
         uniqueConstraints=
         @UniqueConstraint(columnNames={"id", "email"})
 )
-public class WebPushSubscription {
+public class WebPushSubscription implements Serializable {
 
     @Id
     @SequenceGenerator(name="webPushSubscription_seq", initialValue=1, allocationSize=1)
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="webPushSubscription_seq")
     private Long id;
 
-    @ManyToMany
+    @OneToMany(mappedBy = "webPushSubscription",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Membership> members = new ArrayList<>();
+
     private String email;
     private String auth;
     private String endpoint;
     private String p256dh;
 
+    public WebPushSubscription() {
+    }
 
     public WebPushSubscription(String email, String auth, String endpoint, String p256dh) {
         this.email = email;

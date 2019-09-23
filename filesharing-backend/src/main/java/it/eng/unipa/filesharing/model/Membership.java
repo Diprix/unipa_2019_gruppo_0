@@ -13,14 +13,16 @@ public class Membership {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="membership_seq")
 	private Long id;
 	
-	private String email; // ERRORE CONCETTUALE SORBELLIANO
+	private String email;
 	
 	@ManyToOne
 	private Bucket bucket;
 
+	@ManyToOne
+	@MapsId("email")
+	@JoinColumn(name = "email")
+	private WebPushSubscription webPushSubscription;
 
-	@ManyToMany(mappedBy = "membership",cascade = CascadeType.ALL)
-	private List<WebPushSubscription> webPushSubscriptions = new ArrayList<WebPushSubscription>();
 
 	
 	private boolean permissionCreate;

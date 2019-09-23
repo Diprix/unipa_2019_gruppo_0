@@ -19,6 +19,7 @@ public class UserRole {
 	@ManyToOne
 	@MapsId("uuid")
 	private Team team;
+
 	
 	@Column(nullable = true)
 	private String longName;

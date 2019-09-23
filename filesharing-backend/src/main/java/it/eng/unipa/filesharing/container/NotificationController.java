@@ -41,6 +41,7 @@ public class NotificationController {
 
     public NotificationController(@Autowired SubscriptionsRegistryService subscriptionsRegistryService) {
 
+        this.teamService = teamService;
         this.subscriptionsRegistryService = subscriptionsRegistryService;
     }
 
