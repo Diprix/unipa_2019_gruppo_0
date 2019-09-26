@@ -1,15 +1,10 @@
 package it.eng.unipa.filesharing.model;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
+
 
 @Entity
-//@Table(
-//        uniqueConstraints=
-//        @UniqueConstraint(columnNames={"id", "email"})
-//)
 public class WebPushSubscription  {
 
     @Id
@@ -17,26 +12,21 @@ public class WebPushSubscription  {
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="webPushSubscription_seq")
     private Long id;
 
-//    @OneToMany(mappedBy = "webPushSubscription",cascade = CascadeType.ALL,orphanRemoval = true)
-//    private List<Membership> members = new ArrayList<>();
-
-//    @ManyToOne
-//    @MapsId("email")
-//    private Membership membership;
-
     private String email;
     private String auth;
     private String endpoint;
     private String p256dh;
+    private UUID uuid;
 
     public WebPushSubscription() {
     }
 
-    public WebPushSubscription(String email, String auth, String endpoint, String p256dh) {
+    public WebPushSubscription(String email, String auth, String endpoint, String p256dh, UUID uuid) {
         this.email = email;
         this.auth = auth;
         this.endpoint = endpoint;
         this.p256dh = p256dh;
+        this.uuid = uuid;
     }
 
     public String getEmail() {
@@ -70,6 +60,14 @@ public class WebPushSubscription  {
         this.endpoint = endpoint;
     }
 
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
     @Override
     public String toString() {
         return "WebPushSubscription{" +
@@ -78,6 +76,7 @@ public class WebPushSubscription  {
                 ", auth='" + auth + '\'' +
                 ", endpoint='" + endpoint + '\'' +
                 ", p256dh='" + p256dh + '\'' +
+                ", uuid=" + uuid +
                 '}';
     }
 }

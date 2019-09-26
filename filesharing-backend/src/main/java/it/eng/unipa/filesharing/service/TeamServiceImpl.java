@@ -5,7 +5,6 @@ import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.eng.unipa.filesharing.dto.*;
 import it.eng.unipa.filesharing.model.*;
 import nl.martijndwars.webpush.Notification;
-import nl.martijndwars.webpush.PushService;
+import nl.martijndwars.webpush.Subscription;
 import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
@@ -43,12 +42,13 @@ public class TeamServiceImpl implements TeamService {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	private SubscriptionsRegistryService subscriptionsRegistryService;
+	private SubscriptionService subscriptionService;
 
 	private TeamRepository teamRepository;
 
 	private ConversionService conversionService;
 
+	Subscription subscription;
 
 	private List<BucketType> allBucketType;
 
@@ -179,12 +179,12 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public ResourceDTO addContent(UUID uuid, String bucketName, String parentUniqueId, String name, byte[] content) {
+	public ResourceDTO addContent(UUID uuid, String bucketName, String parentUniqueId, String name, byte[] content) throws InterruptedException, GeneralSecurityException, JoseException, ExecutionException, IOException {
 		Team team = team(uuid);
 		ContentResource contentResource = team.addContent(bucketName, parentUniqueId, SecurityContext.getEmail(), name, content);
 
-		List<UserRole> members = team.getMembers();
-		subscriptionsRegistryService.getSubscriptions(SecurityContext.getEmail(), name, members);
+	//	List<UserRole> members = team.getMembers();
+		subscriptionService.sendPushMessage(SecurityContext.getEmail(), name, uuid);
 		return conversionService.convert(contentResource, ResourceDTO.class);
 	}
 

@@ -1,11 +1,15 @@
 package it.eng.unipa.filesharing.service;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 import it.eng.unipa.filesharing.dto.*;
 import it.eng.unipa.filesharing.model.WebPushSubscription;
+import org.jose4j.lang.JoseException;
 
 public interface TeamService {
 	
@@ -35,7 +39,7 @@ public interface TeamService {
 
 	ResourceDTO tree(UUID uuid, String name);
 
-	ResourceDTO addContent(UUID uuid, String bucketName, String parentUniqueId, String name, byte[] content);
+	ResourceDTO addContent(UUID uuid, String bucketName, String parentUniqueId, String name, byte[] content) throws InterruptedException, GeneralSecurityException, JoseException, ExecutionException, IOException;
 
 	ResourceDTO addFolder(UUID uuid, String bucketName, String parentUniqueId, String name);
 

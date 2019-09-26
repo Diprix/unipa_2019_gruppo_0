@@ -11,9 +11,9 @@ public class SubscriptionConvert implements Converter<WebPushSubscription, Subsc
         SubscriptionDTO subscriptionDTO= null;
         subscriptionDTO = new SubscriptionDTO();
         subscriptionDTO.setEmail(webPushSubscription.getEmail());
-        subscriptionDTO.getWebPushSubscription().setEndpoint(webPushSubscription.getEndpoint());
-        subscriptionDTO.getWebPushSubscription().setAuth(webPushSubscription.getAuth());
-        subscriptionDTO.getWebPushSubscription().setP256dh(webPushSubscription.getP256dh());
+        subscriptionDTO.setEndpoint(webPushSubscription.getEndpoint());
+        subscriptionDTO.setAuth(webPushSubscription.getAuth());
+        subscriptionDTO.setP256dh(webPushSubscription.getP256dh());
 
         return subscriptionDTO;
     }

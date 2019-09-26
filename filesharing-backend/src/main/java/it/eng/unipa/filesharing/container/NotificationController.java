@@ -1,15 +1,9 @@
 package it.eng.unipa.filesharing.container;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import it.eng.unipa.filesharing.context.SecurityContext;
-import it.eng.unipa.filesharing.dto.SubscriptionDTO;
-import it.eng.unipa.filesharing.dto.TeamDTO;
 import it.eng.unipa.filesharing.model.WebPushSubscription;
-import it.eng.unipa.filesharing.service.SubscriptionsRegistryService;
-import it.eng.unipa.filesharing.service.TeamService;
-import org.junit.Test;
+import it.eng.unipa.filesharing.service.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.google.gson.Gson;
 import org.apache.http.HttpResponse;
@@ -19,7 +13,6 @@ import nl.martijndwars.webpush.PushService;
 import nl.martijndwars.webpush.Notification;
 
 import java.security.Security;
-import java.util.List;
 import java.util.UUID;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -36,30 +29,30 @@ public class NotificationController {
     private Subscription subscription= new Subscription();
 
        //CREO IL SERVIZIO CHE MI GESTISCE LE OPERAZIONI DI SOTTOSCRIZIONE.
-    private SubscriptionsRegistryService subscriptionsRegistryService;
+    private SubscriptionService subscriptionService;
     WebPushSubscription webPushSubscription =new WebPushSubscription();
 
-    public NotificationController(@Autowired SubscriptionsRegistryService subscriptionsRegistryService) {
-        this.subscriptionsRegistryService = subscriptionsRegistryService;
+    public NotificationController(@Autowired SubscriptionService subscriptionService) {
+        this.subscriptionService = subscriptionService;
     }
 
 
 //    @GetMapping("")
 //    public ResponseEntity<List<SubscriptionDTO>> mySubscription(){
-//        return new ResponseEntity<List<SubscriptionDTO>>(this.subscriptionsRegistryService.mySubscription(getEmail()),HttpStatus.OK);
+//        return new ResponseEntity<List<SubscriptionDTO>>(this.subscriptionService.mySubscription(getEmail()),HttpStatus.OK);
 //    }
     // METODO DI SOTTOSCRIZIONE
 //    @PostMapping("/subscribe")
 //    @ResponseStatus(value = HttpStatus.CREATED)
 //    public void addSubscribe(@RequestBody Subscription  subscription){
-//        subscriptionsRegistryService.addSubscriptions(getEmail(), subscription);
+//        subscriptionService.addSubscriptions(getEmail(), subscription);
 //        System.out.println("Sottoscrizione registrata per " + getEmail());
 //    }
 
     @PostMapping("/subscribe")
     @ResponseStatus(value = HttpStatus.CREATED)
     public void addSubscribe(@RequestBody Subscription subscription){
-        subscriptionsRegistryService.addSubscriptions(SecurityContext.getEmail(), subscription);
+        subscriptionService.addSubscriptions(SecurityContext.getEmail(), subscription, UUID.randomUUID());
         System.out.println("Sottoscrizione registrata per " + getEmail());
     }
 
@@ -67,7 +60,9 @@ public class NotificationController {
     @PostMapping("/unsubscribe")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void removeSubscribe(@RequestBody Subscription subscription) {
-        subscriptionsRegistryService.removeSubscriptions(getEmail(), subscription);
+//        WebPushSubscription webPushSubscription= new  WebPushSubscription(
+//        subscription.endpoint, subscription.keys.auth, subscription.keys.p256dh);
+//        subscriptionService.removeSubscriptions(getEmail(), webPushSubscription);
          System.out.println(">>** Sottoscrizione cancellata");
     }
 

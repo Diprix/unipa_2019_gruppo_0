@@ -1,9 +1,13 @@
 package it.eng.unipa.filesharing;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.Security;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.martijndwars.webpush.PushService;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.springframework.boot.SpringApplication;
@@ -25,12 +29,19 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 public class FileSharingApplication{
 
-	public static void main(String[] args) {
+
+	public static void main(String[] args)throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException {
+
+		// PUSH SERVICE CONNECTION INSTANCE
+		PushService pushService = new PushService();
 		// Add BouncyCastle as an algorithm provider
 		if (Security.getProvider(BouncyCastleProvider.PROVIDER_NAME) == null) {
 			Security.addProvider(new BouncyCastleProvider());
 		}
 
+		// SET ASINMETRIC KEY FOR CRYPTO-DATA
+		pushService.setPublicKey("BBYCxwATP2vVgw7mMPHJfT6bZrJP2iUV7OP_oxHzEcNFenrX66D8G34CdEmVULNg4WJXfjkeyT0AT9LwavpN8M4=");
+		pushService.setPrivateKey("AKYLHgp-aV3kOys9Oy6QgxNI6OGIlOB3G6kjGvhl57j_");
 
 		SpringApplication.run(FileSharingApplication.class, args);
 	}

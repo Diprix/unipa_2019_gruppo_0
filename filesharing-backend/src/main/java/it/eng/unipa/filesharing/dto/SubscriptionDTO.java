@@ -2,32 +2,30 @@ package it.eng.unipa.filesharing.dto;
 
 import it.eng.unipa.filesharing.model.WebPushSubscription;
 import nl.martijndwars.webpush.Subscription;
+import sun.plugin.util.UIUtil;
+
+import java.util.UUID;
 
 
 public class SubscriptionDTO {
     private String email;
-    private WebPushSubscription webPushSubscription;
+    private String auth;
+    private String endpoint;
+    private String p256dh;
+    private UUID uuid;
+
 
     public SubscriptionDTO() {
 
     }
 
-
-    public SubscriptionDTO(String email, WebPushSubscription webPushSubscription) {
+    public SubscriptionDTO(String email, String auth, String endpoint, String p256dh, UUID uuid) {
         this.email = email;
-        this.webPushSubscription = webPushSubscription;
+        this.auth = auth;
+        this.endpoint = endpoint;
+        this.p256dh = p256dh;
+        this.uuid =uuid;
     }
-
-    public SubscriptionDTO(String email, Subscription subscription) {
-        super();
-        this.email = email;
-        this.webPushSubscription.setEmail(email);
-        this.webPushSubscription.setEndpoint(subscription.endpoint);
-        this.webPushSubscription.setAuth(subscription.keys.auth);
-        this.webPushSubscription.setP256dh(subscription.keys.p256dh);
-    }
-
-
 
     public String getEmail() {
         return email;
@@ -37,11 +35,49 @@ public class SubscriptionDTO {
         this.email = email;
     }
 
-    public WebPushSubscription getWebPushSubscription() {
-        return webPushSubscription;
+    public String getAuth() {
+        return auth;
     }
 
-    public void setWebPushSubscription(WebPushSubscription webPushSubscription) {
-        this.webPushSubscription = webPushSubscription;
+    public void setAuth(String auth) {
+        this.auth = auth;
+    }
+
+    public String getEndpoint() {
+        return endpoint;
+    }
+
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
+
+    public String getP256dh() {
+        return p256dh;
+    }
+
+    public void setP256dh(String p256dh) {
+        this.p256dh = p256dh;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    @Override
+    public String toString() {
+        return "SubscriptionDTO{" +
+                "email='" + email + '\'' +
+                ", auth='" + auth + '\'' +
+                ", endpoint='" + endpoint + '\'' +
+                ", p256dh='" + p256dh + '\'' +
+                ", uuid='" +uuid + '\''+
+                '}';
     }
 }
+
+
+
