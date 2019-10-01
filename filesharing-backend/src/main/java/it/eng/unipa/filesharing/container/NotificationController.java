@@ -1,5 +1,6 @@
 package it.eng.unipa.filesharing.container;
 import it.eng.unipa.filesharing.context.SecurityContext;
+import it.eng.unipa.filesharing.dto.SubscriptionDTO;
 import it.eng.unipa.filesharing.model.WebPushSubscription;
 import it.eng.unipa.filesharing.service.SubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,14 +43,16 @@ public class NotificationController {
 //        return new ResponseEntity<List<SubscriptionDTO>>(this.subscriptionService.mySubscription(getEmail()),HttpStatus.OK);
 //    }
     // METODO DI SOTTOSCRIZIONE
-//    @PostMapping("/subscribe")
-//    @ResponseStatus(value = HttpStatus.CREATED)
-//    public void addSubscribe(@RequestBody Subscription  subscription){
-//        subscriptionService.addSubscriptions(getEmail(), subscription);
-//        System.out.println("Sottoscrizione registrata per " + getEmail());
-//    }
-
     @PostMapping("/subscribe")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public SubscriptionDTO saveSub(@RequestBody Subscription  subscription){
+        System.out.println("Sottoscrizione registrata per " + getEmail());
+        SubscriptionDTO dto = subscriptionService.saveSub(subscription);
+        System.out.println("Sottoscrizione registrata per " + getEmail());
+        return dto;
+    }
+
+    @PostMapping("/subscribe2")
     @ResponseStatus(value = HttpStatus.CREATED)
     public void addSubscribe(@RequestBody Subscription subscription){
         subscriptionService.addSubscriptions(SecurityContext.getEmail(), subscription, UUID.randomUUID());
@@ -60,14 +63,13 @@ public class NotificationController {
     @PostMapping("/unsubscribe")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void removeSubscribe(@RequestBody Subscription subscription) {
-//        WebPushSubscription webPushSubscription= new  WebPushSubscription(
-//        subscription.endpoint, subscription.keys.auth, subscription.keys.p256dh);
-//        subscriptionService.removeSubscriptions(getEmail(), webPushSubscription);
+
+    subscriptionService.removeSubscriptions(subscription);
          System.out.println(">>** Sottoscrizione cancellata");
     }
 
     // METODO CHE CONTATTA IL PUSH SERVICE IL QUALE DESTINA IL MESSAGGIO AL CLIENT CORRETTO GRAZIE ALL'ENDPOINT
-    @RequestMapping("/notification/send")
+    @RequestMapping("/send")
     public String send(@RequestParam("subscriptionJson") String subscriptionJson) {
         Security.addProvider(new BouncyCastleProvider());
         try {

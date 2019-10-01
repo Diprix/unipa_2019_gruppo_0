@@ -1,7 +1,11 @@
 package it.eng.unipa.filesharing;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
+import org.jose4j.lang.JoseException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -65,9 +69,22 @@ public class TeamServiceTest {
 		LOGGER.info("TEAM {}",r);
 		
 		teamService.addMembership(uuid, bucketName, new MembershipDTO(otherEmail1,true,true));
-		
-		ResourceDTO addContent = teamService.addContent(uuid,bucketName,null,"testina.txt","ciao".getBytes());
-		
+
+		ResourceDTO addContent = null;
+		try {
+			addContent = teamService.addContent(uuid,bucketName,null,"testina.txt","ciao".getBytes());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (GeneralSecurityException e) {
+			e.printStackTrace();
+		} catch (JoseException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		ResourceDTO content = teamService.getContent(uuid, bucketName, addContent.getUniqueKey());
 		
 		System.out.println(content);

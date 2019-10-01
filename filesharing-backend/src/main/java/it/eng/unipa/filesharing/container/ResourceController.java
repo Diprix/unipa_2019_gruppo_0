@@ -2,8 +2,11 @@ package it.eng.unipa.filesharing.container;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
+import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -46,7 +49,7 @@ public class ResourceController {
 	
 	@PostMapping("/addContent/{uuid}/{bucketName}")
 	@ResponseStatus(value = HttpStatus.CREATED)
-	public void addContent(@PathVariable("uuid") UUID uuid,@PathVariable("bucketName") String bucketName,@RequestParam(value = "parentUniqueId", required = false)String parentUniqueId,@RequestParam("file") MultipartFile multipartFile) throws IOException {
+	public void addContent(@PathVariable("uuid") UUID uuid,@PathVariable("bucketName") String bucketName,@RequestParam(value = "parentUniqueId", required = false)String parentUniqueId,@RequestParam("file") MultipartFile multipartFile) throws IOException, InterruptedException, GeneralSecurityException, JoseException, ExecutionException {
 		teamService.addContent(uuid, bucketName, parentUniqueId, multipartFile.getOriginalFilename(), multipartFile.getBytes());
 	}
 	

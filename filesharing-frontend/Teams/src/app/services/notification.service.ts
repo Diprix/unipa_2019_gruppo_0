@@ -13,11 +13,11 @@ export class NotificationService {
   /// INSERITO NEL PATH notification/
 
   addPushSubscriber(sub: any) {
-    return this.http.post('/api/notification/subscribe', sub);
+    return this.http.post('/api/subscribe', sub);
   }
 
   removePushSubscribe(sub: any) {
-    return this.http.post('/api/notification/unsubscribe', sub);
+    return this.http.post('/api/unsubscribe', sub);
   }
 
 }

@@ -2,7 +2,6 @@ package it.eng.unipa.filesharing.dto;
 
 import it.eng.unipa.filesharing.model.WebPushSubscription;
 import nl.martijndwars.webpush.Subscription;
-import sun.plugin.util.UIUtil;
 
 import java.util.UUID;
 

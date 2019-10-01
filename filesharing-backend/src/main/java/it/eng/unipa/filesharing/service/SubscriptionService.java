@@ -2,6 +2,7 @@ package it.eng.unipa.filesharing.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import it.eng.unipa.filesharing.dto.SubscriptionDTO;
+import it.eng.unipa.filesharing.model.PushSelector;
 import it.eng.unipa.filesharing.model.UserRole;
 import it.eng.unipa.filesharing.model.WebPushSubscription;
 import nl.martijndwars.webpush.Notification;
@@ -30,7 +31,7 @@ public interface SubscriptionService {
     WebPushSubscription addSubscriptions(String userEmail, Subscription subscription, UUID uuid);
 
     // REMOVE SUBSCRIPTION TO DATABASE
-    void removeSubscriptions(WebPushSubscription webPushSubscription);
+    void removeSubscriptions(Subscription subscription);
 
     // RETURN A SUBSCRIPTION TO DATABASE
     Notification getSubscriptions(String userEmail, String endPoint, String nameFile);
@@ -42,6 +43,7 @@ public interface SubscriptionService {
     SubscriptionDTO tree();
 
 
-    String saveSub(SubscriptionDTO subscriptionDTO, UUID uuid);
+    SubscriptionDTO saveSub(Subscription subscription);
 
+    void setPushAction(PushSelector pushSelector);
 }

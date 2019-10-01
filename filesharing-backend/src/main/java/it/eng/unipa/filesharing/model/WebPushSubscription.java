@@ -21,12 +21,21 @@ public class WebPushSubscription  {
     public WebPushSubscription() {
     }
 
-    public WebPushSubscription(String email, String auth, String endpoint, String p256dh, UUID uuid) {
+    public WebPushSubscription(String email, String endpoint, String auth, String p256dh, UUID uuid) {
         this.email = email;
         this.auth = auth;
         this.endpoint = endpoint;
         this.p256dh = p256dh;
         this.uuid = uuid;
+    }
+
+    public WebPushSubscription(String email, String endpoint, String auth, String p256dh) {
+        this.email = email;
+        this.auth = auth;
+        this.endpoint = endpoint;
+        this.p256dh = p256dh;
+        // da eliminare
+        this.uuid = UUID.randomUUID();
     }
 
     public String getEmail() {
