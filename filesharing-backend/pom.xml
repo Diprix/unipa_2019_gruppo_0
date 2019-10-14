@@ -4,7 +4,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>filesharing-backend</artifactId>
 	<parent>
-		<groupId>it.eng.unipa.filesharing</groupId> <artifactId>filesharing</artifactId>
+		<groupId>it.eng.unipa.filesharing</groupId>
+		<artifactId>filesharing</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 	<dependencies>
@@ -130,6 +131,7 @@
 					   <class>it.eng.unipa.filesharing.dto.ResourceDTO</class>
 					   <class>it.eng.unipa.filesharing.dto.TeamDTO</class>
 					   <class>it.eng.unipa.filesharing.dto.UserRoleDTO</class>
+					   <class>it.eng.unipa.filesharing.dto.SubscriptionDTO</class>
                    </classes>
                    <outputKind>module</outputKind>
                    <outputFileType>implementationFile</outputFileType>

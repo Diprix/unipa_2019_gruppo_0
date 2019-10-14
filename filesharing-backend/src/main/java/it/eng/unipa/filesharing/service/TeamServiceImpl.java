@@ -1,12 +1,16 @@
 package it.eng.unipa.filesharing.service;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import it.eng.unipa.filesharing.dto.*;
 import it.eng.unipa.filesharing.model.*;
+import org.jose4j.lang.JoseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.TypeDescriptor;
@@ -163,11 +167,12 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public ResourceDTO addContent(UUID uuid, String bucketName,String parentUniqueId,String name,byte[] content) {
+	public ResourceDTO addContent(UUID uuid, String bucketName,String parentUniqueId,String name,byte[] content) throws InterruptedException, GeneralSecurityException, JoseException, ExecutionException, IOException {
 		Team team = team(uuid);
 		ContentResource contentResource = team.addContent(bucketName, parentUniqueId, SecurityContext.getEmail(), name, content);
 		PushSelector pushSelector = new PushSelector(SecurityContext.getEmail(),uuid ,name);
 		subscriptionService.setPushAction(pushSelector);
+		System.out.println("Settato");
 		return conversionService.convert(contentResource, ResourceDTO.class);
 	}
 

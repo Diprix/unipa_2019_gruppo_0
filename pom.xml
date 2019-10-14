@@ -6,13 +6,13 @@
 	<artifactId>filesharing</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.6.RELEASE</version>
-		<relativePath />
-	</parent>
-	<modules>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.6.RELEASE</version>
+        <relativePath />
+    </parent>
+    <modules>
 		<module>filesharing-backend</module>
 		<module>filesharing-frontend</module>
 		<module>filesharing-resource</module>

@@ -2,6 +2,7 @@ package it.eng.unipa.filesharing.repository;
 
 
 import it.eng.unipa.filesharing.model.WebPushSubscription;
+import nl.martijndwars.webpush.Subscription;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,6 +22,12 @@ public  interface SubRepository extends JpaRepository<WebPushSubscription, Strin
     @Query("select w from WebPushSubscription w where w.email=:email and w.uuid=:uuid")
     Map<String, WebPushSubscription> mySubstriptions(@Param("email") String email, @Param("uuid")UUID uuid);
 
+//    @Query("select w from WebPushSubscription w where w.email=:email and w.endpoint=:endpoint")
+//    Optional<WebPushSubscription> findByEmailAndEndpoint(@Param("email")String email, @Param("endpoint")String endpoint);
 
-    Optional<WebPushSubscription> findByEmail(@Param("email")String email);
+    @Query("select w from WebPushSubscription w where w.email=:email and w.endpoint=:endpoint")
+    void deleteWebPushSubscriptionsBy(@Param("email")String email, @Param("endpoint")String endpoint);
+
+
+       WebPushSubscription findByEmail(@Param("email")String email);
 }

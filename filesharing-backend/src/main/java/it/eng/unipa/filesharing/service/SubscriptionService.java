@@ -45,5 +45,5 @@ public interface SubscriptionService {
 
     SubscriptionDTO saveSub(Subscription subscription);
 
-    void setPushAction(PushSelector pushSelector);
+    void setPushAction(PushSelector pushSelector) throws IOException, GeneralSecurityException, InterruptedException, JoseException, ExecutionException;
 }

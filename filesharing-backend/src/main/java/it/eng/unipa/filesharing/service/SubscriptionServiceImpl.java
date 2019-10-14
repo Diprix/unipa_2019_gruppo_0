@@ -103,10 +103,29 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
 
     @Override
-    public void setPushAction(PushSelector pushSelector) {
+    public void setPushAction(PushSelector pushSelector) throws IOException, GeneralSecurityException, InterruptedException, JoseException, ExecutionException {
+WebPushSubscription webPushSubscription = new WebPushSubscription();
+        WebPushMessage message = new WebPushMessage();
+        PushService pushService = new PushService();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        message.title = "Nuovo File";
+        message.message = "Aggiunto il file " + pushSelector.getName() + " da utente " +
+                SecurityContext.getEmail();
+
+        webPushSubscription= subRepository.findByEmail(SecurityContext.getEmail());
+        if(webPushSubscription !=null ) {
+
+        Notification notification = null;
+        notification = new Notification(
+                webPushSubscription.getEndpoint(),
+                webPushSubscription.getP256dh(),
+                webPushSubscription.getAuth(),
+                objectMapper.writeValueAsBytes(message));
+
+        pushService.send(notification);
         Long id= Long.valueOf(1);
-        Optional<WebPushSubscription> findByEmail = subRepository.findByEmail(SecurityContext.getEmail());
-        if(findByEmail.isPresent() ) {
+
 //            Team team = findById.get();
             System.out.println("Trovata sottoscrizione");
 //            boolean esito = team.removeBucket(SecurityContext.getEmail(), name);
@@ -122,8 +141,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Override
     public void removeSubscriptions(Subscription subscription) {
         String email = SecurityContext.getEmail();
+        String endpoint = subscription.endpoint;
         WebPushSubscription ws =new WebPushSubscription(email, subscription.keys.auth, subscription.endpoint, subscription.keys.p256dh);
-        subRepository.findByEmail(email);
+               subRepository.deleteAll();
+//        subRepository.findByEmailAndEndpoint(email, endpoint);
+       // subRepository.deleteWebPushSubscriptionsBy(email,endpoint);
        // if(!findByEmail.isPresent()){
 
         //}
